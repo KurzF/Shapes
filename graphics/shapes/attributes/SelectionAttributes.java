@@ -12,7 +12,7 @@ public class SelectionAttributes extends Attributes {
 	}
 
 	public String getID() {
-		return "selection";
+		return Attributes.SelectionID;
 	}
 	
 	public boolean isSelected() {

@@ -1,10 +1,9 @@
 package graphics.shapes.ui;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 
+import graphics.shapes.SCollection;
 import graphics.shapes.Shape;
-import graphics.shapes.ShapeDraftman;
 import graphics.ui.Controller;
 import graphics.ui.View;
 
@@ -15,12 +14,14 @@ public class ShapesView extends View {
 	}
 	
 	public Controller defaultController(Object model) {
-		return new ShapeController(model);
+		return new ShapeController(model,this);
 	}
 	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		ShapeDraftman sd = new ShapeDraftman(g);
-		((Shape) this.getModel()).accept(sd);
+		Shape s = (Shape) this.getModel();
+		if(s == null) { return; }
+		s.accept(sd);
 	}
 }

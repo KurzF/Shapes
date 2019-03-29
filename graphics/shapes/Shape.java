@@ -6,15 +6,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.SelectionAttributes;
 
 public abstract class Shape {
 	private Map<String,Attributes> attributes;
 	
 	public Shape() {
-		this.attributes = new TreeMap();
+		this.attributes = new TreeMap<String,Attributes>();
 	}
 	
-	public void addAttribute(Attributes a) {
+	public void addAttributes(Attributes a) {
 		this.attributes.put(a.getID(), a);
 	}
 	
@@ -27,5 +28,13 @@ public abstract class Shape {
 	public abstract void translate(int x, int y);
 	public abstract Rectangle getBound();
 	public abstract void accept(ShapeVisitor sv);
+	
+	public boolean isSelected() {// Shouldn't be here
+		SelectionAttributes sa = (SelectionAttributes)this.getAttributes(Attributes.SelectionID);
+		if(sa != null) {
+			return sa.isSelected();
+		}
+		return false;
+	}
 	
 }

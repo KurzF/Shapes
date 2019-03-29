@@ -9,8 +9,12 @@ public class SRectangle extends Shape {
 	public SRectangle(Rectangle rect) {
 		super();
 		this.rect = rect;
-		
 	}
+	
+	public SRectangle(Point p,int width, int height) {
+		this(new Rectangle(p.x, p.y, width, height));
+	}
+	
 	public Rectangle getRect() {
 		return this.rect;
 	}
@@ -27,7 +31,7 @@ public class SRectangle extends Shape {
 
 	@Override
 	public void translate(int x, int y) {
-		this.rect.add(x, y);
+		this.rect.translate(x, y);
 	}
 
 	@Override
