@@ -75,8 +75,8 @@ public class ShapeController extends Controller {
 	public void mouseDragged(MouseEvent e) {
 		System.out.println("drag");
 		if(this.state ==1) {
-			int dx = (int)(e.getX() - this.press_position.getX());
-			int dy = (int)(e.getY() - this.press_position.getY());
+			int dx = e.getX() - this.press_position.x;
+			int dy = e.getY() - this.press_position.y;
 			this.press_position = e.getPoint();
 			this.translateSelected(dx, dy);
 		}
@@ -99,6 +99,7 @@ public class ShapeController extends Controller {
 	}
 	
 	private Shape getTarget(Point p) {
+		if(this.getModel() == null) { return null; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
@@ -110,6 +111,7 @@ public class ShapeController extends Controller {
 	}
 	
 	private void unselectAll() {
+		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			SelectionAttributes sa = (SelectionAttributes)i.next().getAttributes(Attributes.SelectionID);

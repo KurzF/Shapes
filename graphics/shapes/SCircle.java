@@ -15,7 +15,7 @@ public class SCircle extends Shape {
 	
 	@Override
 	public Point getLoc() {
-		return this.loc;
+		return new Point(this.loc);
 	}
 
 	@Override

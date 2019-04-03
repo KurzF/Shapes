@@ -50,10 +50,12 @@ public class Editor extends JFrame
 		this.model.add(r);
 		
 		
-		SCircle c = new SCircle(new Point(100,100),10);
+		
+		SCircle c = new SCircle(new Point(10,10),10);
 		c.addAttributes(new ColorAttributes(true,true,Color.BLUE,Color.BLUE));
 		c.addAttributes(new SelectionAttributes());
 		this.model.add(c);
+		c.addAttributes(new ColorAttributes(true,false,Color.RED,Color.BLACK));
 		
 		SText t= new SText(new Point(100,100),"qpihfqhfljqgfkqsgfhkqgfhkqgfkq");
 		t.addAttributes(new ColorAttributes(true,false,Color.YELLOW,Color.BLUE));

@@ -26,6 +26,7 @@ public class SCollection extends Shape {
 	public Point getLoc() {
 		//The location is the top left point
 		Iterator<Shape> i = this.iterator();
+		if(!i.hasNext()) { return new Point(0,0); }
 		Point loc = i.next().getLoc();
 		while(i.hasNext()) {
 			Point p = i.next().getLoc();
@@ -37,7 +38,7 @@ public class SCollection extends Shape {
 
 	@Override
 	public void setLoc(Point p) {
-		this.translate((int)(p.getX() - this.getLoc().getX()), (int)(p.getY() - this.getLoc().getY()));
+		this.translate(p.x - this.getLoc().x, p.y - this.getLoc().y);
 	}
 
 	@Override
@@ -50,17 +51,22 @@ public class SCollection extends Shape {
 
 	@Override
 	public Rectangle getBound() {
-		Point loc = this.getLoc();
 		Iterator<Shape> i = this.iterator();
+		if(!i.hasNext()) {
+			return new Rectangle(0,0,0,0);
+		}
 		Rectangle r = i.next().getBound();
 		Point bottom_right = r.getLocation();
+		Point top_left = r.getLocation();
 		bottom_right.translate(r.width, r.height);
 		while(i.hasNext()) {
 			r = i.next().getBound();
+			if(r.x < top_left.x) { top_left.x = r.x; }
+			if(r.y < top_left.y) { top_left.y = r.y; }
 			if(r.width + r.x > bottom_right.x) { bottom_right.x = r.width + r.x; }
 			if(r.height + r.y > bottom_right.y) { bottom_right.y = r.height + r.y; }
 		}
-		return new Rectangle(loc.x, loc.y,bottom_right.x-loc.x,bottom_right.y-loc.y);
+		return new Rectangle(top_left.x, top_left.y,bottom_right.x-top_left.x,bottom_right.y-top_left.y);
 	}
 
 	@Override
