@@ -67,6 +67,7 @@ public class Controller implements MouseListener, MouseMotionListener, KeyListen
 	
 	public void keyTyped(KeyEvent evt)
 	{
+		System.out.println("ok");
 	}
 	
 	public void keyPressed(KeyEvent evt)

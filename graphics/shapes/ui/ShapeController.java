@@ -1,6 +1,7 @@
 package graphics.shapes.ui;
 
 import java.awt.Point;
+import java.awt.event.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
@@ -104,8 +105,8 @@ public class ShapeController extends Controller {
 		this.getView().repaint();
 	}
 	
-	public void keyTyped(KeyEvent evt) {
-		System.out.println("key");
+	public void keyPressed(KeyEvent evt) {
+		System.out.println(evt.getKeyChar());
 	}
 	
 	private void translateSelected(int x, int y) {
