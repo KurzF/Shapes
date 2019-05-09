@@ -75,11 +75,11 @@ public class ShapeDraftman implements ShapeVisitor {
 		if(ca == null) { ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; }
 		if(ca.filled()) {
 			this.g.setColor(ca.filledColor());
-			this.g.fillOval(c.getLoc().x,c.getLoc().y, c.getDiameter(), c.getDiameter());
+			this.g.fillOval(c.getLoc().x,c.getLoc().y, c.getRadius(), c.getRadius());
 		}
 		if(ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
-			this.g.drawOval(c.getLoc().x,  c.getLoc().y,  c.getDiameter(), c.getDiameter());
+			this.g.drawOval(c.getLoc().x,  c.getLoc().y,  c.getRadius(), c.getRadius());
 		}
 		this.drawSelection(c);
 	}

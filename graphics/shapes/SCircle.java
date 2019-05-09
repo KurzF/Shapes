@@ -7,12 +7,12 @@ import graphics.shapes.attributes.ResizeAttributes;
 
 public class SCircle extends Shape {
 	
-	private int diameter;
+	private int radius;
 	private Point loc; // top left corner of bound
 	
-	public SCircle(Point p, int diameter) {
+	public SCircle(Point p, int radius) {
 		this.setLoc(p);
-		this.setDiameter(diameter);
+		this.setRadius(radius);
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class SCircle extends Shape {
 
 	@Override
 	public Rectangle getBound() {
-		return new Rectangle(this.loc.x, this.loc.y, this.diameter, this.diameter);
+		return new Rectangle(this.loc.x, this.loc.y, this.radius, this.radius);
 	}
 
 	@Override
@@ -48,17 +48,17 @@ public class SCircle extends Shape {
 		sv.visitCircle(this);
 	}
 
-	public int getDiameter() {
-		return this.diameter;
+	public int getRadius() {
+		return this.radius;
 	}
 	
-	public void setDiameter(int d) {
-		this.diameter = d;
+	public void setRadius(int d) {
+		this.radius = d;
 	}
 
 	@Override
 	public void grow(int dx, int dy) {
-		this.diameter += Math.abs(dx) < Math.abs(dy) ? dx : dy;
+		this.radius += Math.abs(dx) < Math.abs(dy) ? dx : dy;
 		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
 		if(ra != null) {
 			ra.refresh();
