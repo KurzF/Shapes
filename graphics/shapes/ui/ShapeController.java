@@ -155,7 +155,8 @@ public class ShapeController extends Controller {
 			}
 			else{
 				AffineTransform tx = new AffineTransform();
-				tx.rotate(Math.toRadians(-rot.getAngle()),s.getLoc().x+s.getBound().width/2,s.getLoc().y+s.getBound().height/2);
+				Point center = s.getCenter();
+				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
 				if(s.getBound().contains(tx.transform(p,null))) {
 					return s;
 				}

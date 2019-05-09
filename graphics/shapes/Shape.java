@@ -29,6 +29,7 @@ public abstract class Shape {
 	public abstract void setLoc(Point p);
 	public abstract void translate(int x, int y);
 	public abstract Rectangle getBound();
+	public abstract Point getCenter();
 	public abstract void accept(ShapeVisitor sv);
 	
 	public boolean isSelected() {// Shouldn't be here

@@ -32,7 +32,14 @@ public class SCircle extends Shape {
 	public Rectangle getBound() {
 		return new Rectangle(this.loc.x, this.loc.y, this.radius*2, this.radius*2);
 	}
-
+	
+	@Override
+	public Point getCenter() {
+		Point p = this.getLoc();
+		p.translate(this.radius, this.radius);
+		return p;
+	}
+	
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCircle(this);

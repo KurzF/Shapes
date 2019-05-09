@@ -45,6 +45,14 @@ public class SText extends Shape {
 		r.translate(this.loc.x, this.loc.y);
 		return r;
 	}
+	
+	@Override
+	public Point getCenter() {
+		Rectangle rect = this.getBound();
+		Point p = this.getLoc();
+		p.translate(rect.width/2, rect.height/2);
+		return p;
+	}
 
 	@Override
 	public void accept(ShapeVisitor sv) {
