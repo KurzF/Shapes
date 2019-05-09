@@ -7,10 +7,10 @@ import java.util.Iterator;
 
 import graphics.ui.Controller;
 import graphics.ui.View;
-
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
 import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
 public class ShapeController extends Controller {
@@ -86,6 +86,27 @@ public class ShapeController extends Controller {
 		System.out.println("key");
 	}
 	
+	public void keyPressed(KeyEvent e) {
+		System.out.println("press");
+	    int keyCode = e.getKeyCode();
+	    switch( keyCode ) { 
+	        case KeyEvent.VK_UP:
+	            // handle up 
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            // handle down 
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        	rotateSelected(+1);
+	            this.getView().repaint();
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	            rotateSelected(-1);
+	            this.getView().repaint();
+	            break;
+	     }
+	} 
+	
 	private void translateSelected(int x, int y) {
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
@@ -96,6 +117,25 @@ public class ShapeController extends Controller {
 			}
 		}
 		this.getView().repaint();
+	}
+	
+	public void rotateSelected(int dtheta) {
+		SCollection model = (SCollection) this.getModel();
+		Shape s;
+		
+		for (Iterator<Shape> it = model.iterator(); it.hasNext();) {
+			s = it.next();
+			if (((SelectionAttributes) s.getAttributes("selection")).isSelected()) {
+				if (dtheta==1) {
+					((RotationAttributes) s.getAttributes("rotation")).incrAngle();
+				}
+				if (dtheta==-1) {
+					((RotationAttributes) s.getAttributes("rotation")).decrAngle();
+				}
+			}
+		}
+		
+		
 	}
 	
 	private Shape getTarget(Point p) {

@@ -2,6 +2,8 @@ package graphics.shapes;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.Map;
 import java.util.TreeMap;
 

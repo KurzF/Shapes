@@ -12,6 +12,7 @@ import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
 import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.FontAttributes;
+import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
 public class Editor extends JFrame
@@ -44,32 +45,34 @@ public class Editor extends JFrame
 		this.model = new SCollection();
 		this.model.addAttributes(new SelectionAttributes());
 		
-		SRectangle r = new SRectangle(new Point(10,10),20,30);
-		r.addAttributes(new ColorAttributes(false,true,Color.BLUE,Color.BLUE));
+		SRectangle r = new SRectangle(new Point(20,10),50,80);
+		r.addAttributes(new ColorAttributes(false,true,Color.RED,Color.RED));
 		r.addAttributes(new SelectionAttributes());
+		r.addAttributes(new RotationAttributes(20));
 		this.model.add(r);
 		
 		
 		
-		SCircle c = new SCircle(new Point(10,10),10);
-		c.addAttributes(new ColorAttributes(true,true,Color.BLUE,Color.BLUE));
+		SCircle c = new SCircle(new Point(50,50),10);
+		c.addAttributes(new ColorAttributes(true,true,Color.GREEN,Color.GREEN));
 		c.addAttributes(new SelectionAttributes());
 		this.model.add(c);
 		c.addAttributes(new ColorAttributes(true,false,Color.RED,Color.BLACK));
 		
-		SText t= new SText(new Point(100,100),"qpihfqhfljqgfkqsgfhkqgfhkqgfkq");
+		SText t= new SText(new Point(100,80),"qpihfqhfljqgfkqsgfhkqgfhkqgfkq");
 		t.addAttributes(new ColorAttributes(true,false,Color.YELLOW,Color.BLUE));
 		t.addAttributes(new FontAttributes());
 		t.addAttributes(new SelectionAttributes());
+		t.addAttributes(new RotationAttributes(40));
 		this.model.add(t);
 		
 		SCollection sc = new SCollection();
 		sc.addAttributes(new SelectionAttributes());
-		r = new SRectangle(new Point(20,30),30,30);
+		r = new SRectangle(new Point(70,90),30,30);
 		r.addAttributes(new ColorAttributes(true,true,Color.MAGENTA,Color.BLUE));
 		r.addAttributes(new SelectionAttributes());
 		sc.add(r);
-		r = new SRectangle(new Point(78,56),31,49);
+		r = new SRectangle(new Point(100,120),31,49);
 		r.addAttributes(new ColorAttributes(false,true,Color.MAGENTA,Color.BLUE));
 		r.addAttributes(new SelectionAttributes());
 		sc.add(r);
@@ -77,6 +80,7 @@ public class Editor extends JFrame
 		c.addAttributes(new ColorAttributes(false,true,Color.BLUE,Color.DARK_GRAY));
 		c.addAttributes(new SelectionAttributes());
 		sc.add(c);
+		sc.addAttributes(new RotationAttributes(70));
 		this.model.add(sc);
 	}
 	
