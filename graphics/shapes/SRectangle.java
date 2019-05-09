@@ -1,7 +1,13 @@
 package graphics.shapes;
 
+import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.ColorAttributes;
+import graphics.shapes.attributes.RotationAttributes;
+
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 
 public class SRectangle extends Shape {
 	private Rectangle rect;

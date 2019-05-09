@@ -3,14 +3,15 @@ package graphics.shapes.ui;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import graphics.ui.Controller;
 import graphics.ui.View;
-
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
 import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
 public class ShapeController extends Controller {
@@ -86,6 +87,27 @@ public class ShapeController extends Controller {
 		System.out.println("key");
 	}
 	
+	public void keyPressed(KeyEvent e) {
+		System.out.println("press");
+	    int keyCode = e.getKeyCode();
+	    switch( keyCode ) { 
+	        case KeyEvent.VK_UP:
+	            // handle up 
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            // handle down 
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        	rotateSelected(+1);
+	            this.getView().repaint();
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	            rotateSelected(-1);
+	            this.getView().repaint();
+	            break;
+	     }
+	} 
+	
 	private void translateSelected(int x, int y) {
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
@@ -98,13 +120,45 @@ public class ShapeController extends Controller {
 		this.getView().repaint();
 	}
 	
+	
+	public void rotateSelected(int dtheta) {
+		SCollection model = (SCollection) this.getModel();
+		Shape s;
+		
+		for (Iterator<Shape> it = model.iterator(); it.hasNext();) {
+			s = it.next();
+			if (((SelectionAttributes) s.getAttributes(Attributes.SelectionID)).isSelected()) {
+				if (dtheta==1) {
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).incrAngle();
+				}
+				if (dtheta==-1) {
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).decrAngle();
+				}
+			}
+		}	
+	}
+	
+	
 	private Shape getTarget(Point p) {
 		if(this.getModel() == null) { return null; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
-			if(s.getBound().contains(p)) {
+			RotationAttributes rot = (RotationAttributes) s.getAttributes(Attributes.RotationID);
+			if (rot == null) {
+				rot= new RotationAttributes();
+			}
+			if(rot.getAngle()==0){
+				if(s.getBound().contains(p)) {
 				return s;
+				}
+			}
+			else{
+				AffineTransform tx = new AffineTransform();
+				tx.rotate(Math.toRadians(-rot.getAngle()),s.getLoc().x+s.getBound().width/2,s.getLoc().y+s.getBound().height/2);
+				if(s.getBound().contains(tx.transform(p,null))) {
+					return s;
+				}
 			}
 		}
 		return null;
