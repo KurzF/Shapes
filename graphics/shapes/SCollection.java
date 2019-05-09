@@ -1,7 +1,12 @@
 package graphics.shapes;
 
+import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.RotationAttributes;
+
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -60,7 +65,8 @@ public class SCollection extends Shape {
 		Point top_left = r.getLocation();
 		bottom_right.translate(r.width, r.height);
 		while(i.hasNext()) {
-			r = i.next().getBound();
+			Shape s=i.next();
+			r = s.getBound();
 			if(r.x < top_left.x) { top_left.x = r.x; }
 			if(r.y < top_left.y) { top_left.y = r.y; }
 			if(r.width + r.x > bottom_right.x) { bottom_right.x = r.width + r.x; }

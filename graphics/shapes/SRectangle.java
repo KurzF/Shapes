@@ -42,7 +42,6 @@ public class SRectangle extends Shape {
 
 	@Override
 	public Rectangle getBound() {
-		RotationAttributes rot = (RotationAttributes) this.getAttributes(Attributes.RotationID);
 		return this.rect;
 	}
 	

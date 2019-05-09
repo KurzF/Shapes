@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import graphics.shapes.SCircle;
@@ -54,6 +55,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		if (rotat == null) {
 			rotat= new RotationAttributes();
 		}
+		this.g.rotate(Math.toRadians(rotat.getAngle()),location.x+(rect.getBound().width/2),location.y+(rect.getBound().height/2));
 		if(ca.filled()) { 
 			this.g.setColor(ca.filledColor());
 			this.g.fill(rect.getRect());
@@ -62,10 +64,9 @@ public class ShapeDraftman implements ShapeVisitor {
 			this.g.setColor(ca.strokedColor());
 		}
 		Rectangle r=rect.getRect();
-		g.rotate(Math.toRadians(rotat.getAngle()),location.x+(r.width/2+r.width%2),location.y+(r.height/2+r.height%2));
 		this.g.drawRect(r.x,r.y,r.width,r.height);
 		drawSelection(rect);
-		g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(r.width/2+r.width%2),location.y+(r.height/2+r.height%2));
+		this.g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(rect.getBound().width/2),location.y+(rect.getBound().height/2));
 	}
 	
 	
@@ -73,16 +74,16 @@ public class ShapeDraftman implements ShapeVisitor {
 	public void visitCollection(SCollection c) {
 		Iterator<Shape> i = c.iterator();
 		Point location=c.getLoc();
-		RotationAttributes rotat = (RotationAttributes) c.getAttributes("rotation");
+		RotationAttributes rotat = (RotationAttributes) c.getAttributes(Attributes.RotationID);
 		if (rotat == null) {
 			rotat= new RotationAttributes();
 		}
-		g.rotate(Math.toRadians(rotat.getAngle()),location.x,location.y);
+		g.rotate(Math.toRadians(rotat.getAngle()),location.x+(c.getBound().width/2),location.y+(c.getBound().height/2));
 		while(i.hasNext()) {
 			i.next().accept(this);
 		}
 		this.drawSelection(c);
-		g.rotate(Math.toRadians(-rotat.getAngle()),location.x,location.y);
+		g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(c.getBound().width/2),location.y+(c.getBound().height/2));
 	}
 	
 	public void visitCircle(SCircle c) {
@@ -107,15 +108,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		if (rotat == null) {
 			rotat= new RotationAttributes();
 		}
-		if(ca.filled()) { 
-			this.g.setColor(ca.filledColor());
-			this.g.fill(t.getBound());
-		}
-		if(ca.stroked()) {
-			this.g.setColor(ca.strokedColor());
-			this.g.draw(t.getBound());
-		}
-		g.rotate(Math.toRadians(rotat.getAngle()),location.x+(t.getBound().x/2),location.y+(t.getBound().y/2));
+		g.rotate(Math.toRadians(rotat.getAngle()),location.x+(t.getBound().width/2),location.y+(t.getBound().height/2));
 		if(ca.filled()) { 
 			this.g.setColor(ca.filledColor());
 			this.g.fill(t.getBound());
@@ -130,7 +123,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		this.g.setFont(fa.font);
 		this.g.drawString(t.getText(), t.getLoc().x, t.getLoc().y);
 		drawSelection(t);
-		g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(t.getBound().x/2),location.y+(t.getBound().y/2));
+		g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(t.getBound().width/2),location.y+(t.getBound().height/2));
 	}
 	
 

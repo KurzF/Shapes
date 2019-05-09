@@ -3,6 +3,7 @@ package graphics.shapes.ui;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import graphics.ui.Controller;
@@ -119,32 +120,45 @@ public class ShapeController extends Controller {
 		this.getView().repaint();
 	}
 	
+	
 	public void rotateSelected(int dtheta) {
 		SCollection model = (SCollection) this.getModel();
 		Shape s;
 		
 		for (Iterator<Shape> it = model.iterator(); it.hasNext();) {
 			s = it.next();
-			if (((SelectionAttributes) s.getAttributes("selection")).isSelected()) {
+			if (((SelectionAttributes) s.getAttributes(Attributes.SelectionID)).isSelected()) {
 				if (dtheta==1) {
-					((RotationAttributes) s.getAttributes("rotation")).incrAngle();
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).incrAngle();
 				}
 				if (dtheta==-1) {
-					((RotationAttributes) s.getAttributes("rotation")).decrAngle();
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).decrAngle();
 				}
 			}
-		}
-		
-		
+		}	
 	}
+	
 	
 	private Shape getTarget(Point p) {
 		if(this.getModel() == null) { return null; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
-			if(s.getBound().contains(p)) {
+			RotationAttributes rot = (RotationAttributes) s.getAttributes(Attributes.RotationID);
+			if (rot == null) {
+				rot= new RotationAttributes();
+			}
+			if(rot.getAngle()==0){
+				if(s.getBound().contains(p)) {
 				return s;
+				}
+			}
+			else{
+				AffineTransform tx = new AffineTransform();
+				tx.rotate(Math.toRadians(-rot.getAngle()),s.getLoc().x+s.getBound().width/2,s.getLoc().y+s.getBound().height/2);
+				if(s.getBound().contains(tx.transform(p,null))) {
+					return s;
+				}
 			}
 		}
 		return null;
