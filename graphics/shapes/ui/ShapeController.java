@@ -10,14 +10,15 @@ import graphics.ui.View;
 
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
-import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.ResizeAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
+import graphics.shapes.handlers.Handler;
 
 public class ShapeController extends Controller {
 	
 	private int state;
 	private Point press_position;//to drag shape
-	
+	private Shape target;
 	public ShapeController(Object model, View view) {
 		super(model);
 		this.setView(view);
@@ -28,8 +29,8 @@ public class ShapeController extends Controller {
 		System.out.println("press");
 		this.press_position = e.getPoint();
 		if(this.state == 1) {
-			Shape s = this.getTarget(this.press_position);
-			if(s == null || !s.isSelected()) {
+			this.setTarget(this.press_position);
+			if(this.target == null || (!this.target.isSelected() && !(this.target instanceof Handler))) {
 				this.state = 3;
 			}
 			else {
@@ -48,13 +49,21 @@ public class ShapeController extends Controller {
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("click");
 		if(this.state == 1) {
-			Shape s = this.getTarget(this.press_position);
 			if(!e.isShiftDown()) {
 				this.unselectAll();
 			}
-			SelectionAttributes sa;
-			if(s != null) {
-				sa = (SelectionAttributes)s.getAttributes(Attributes.SelectionID);
+			
+			if(this.target != null) {
+				SelectionAttributes sa;
+				if(this.target instanceof Handler) {
+					Handler h = (Handler) this.target;
+					sa = (SelectionAttributes)h.getMaster().getAttributes(SelectionAttributes.ID);
+					if(sa != null) {
+						sa.toggleSelection();
+						this.getView().repaint();
+					}
+				}
+				sa = (SelectionAttributes)this.target.getAttributes(SelectionAttributes.ID);
 				if(sa != null) {
 					sa.toggleSelection();
 					this.getView().repaint();
@@ -64,7 +73,11 @@ public class ShapeController extends Controller {
 		this.state = 1;
 	}
 	
-	public void mouseExit(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {
+		System.out.println("enter");
+	}
+	
+	public void mouseExited(MouseEvent e) {
 		System.out.println("exit");
 	}
 	
@@ -74,12 +87,21 @@ public class ShapeController extends Controller {
 	
 	public void mouseDragged(MouseEvent e) {
 		System.out.println("drag");
-		if(this.state ==1) {
-			int dx = (int)(e.getX() - this.press_position.getX());
-			int dy = (int)(e.getY() - this.press_position.getY());
-			this.press_position = e.getPoint();
-			this.translateSelected(dx, dy);
+		int dx = e.getX() - this.press_position.x;
+		int dy = e.getY() - this.press_position.y;
+		this.press_position = e.getPoint();
+		if(this.state == 1) {
+			if(this.target instanceof Handler) {
+				((Handler)this.target).modifier(dx, dy);
+			}
+			else {
+				this.translateSelected(dx, dy);
+			}
 		}
+		if(this.state == 3) {
+			((Shape)this.getModel()).translate(dx, dy);
+		}
+		this.getView().repaint();
 	}
 	
 	public void keyTyped(KeyEvent evt) {
@@ -87,32 +109,51 @@ public class ShapeController extends Controller {
 	}
 	
 	private void translateSelected(int x, int y) {
+		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
-			SelectionAttributes sa = (SelectionAttributes)s.getAttributes(Attributes.SelectionID);
-			if(sa != null && sa.isSelected()) {
+			if(s.isSelected()) {
 				s.translate(x, y);
 			}
 		}
 		this.getView().repaint();
 	}
 	
-	private Shape getTarget(Point p) {
+	private Shape getTarget() {
+		return this.target;
+	}
+	
+	private void setTarget(Point p) {
+		if(this.getModel() == null) { this.target = null; return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
+			ResizeAttributes ra = ((ResizeAttributes)s.getAttributes(ResizeAttributes.ID));
+			if(ra != null) {
+				Iterator<Handler> h = ra.iterator();
+				while(h.hasNext()) {
+					Shape hand = h.next();
+					if(hand.getBound().contains(p)) {
+						this.target = hand;
+						return;
+					}
+				}
+			}
 			if(s.getBound().contains(p)) {
-				return s;
+				this.target = s;
+				return;
 			}
 		}
-		return null;
+		this.target = null;
+		System.out.println(this.target);
 	}
 	
 	private void unselectAll() {
+		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
-			SelectionAttributes sa = (SelectionAttributes)i.next().getAttributes(Attributes.SelectionID);
+			SelectionAttributes sa = (SelectionAttributes)i.next().getAttributes(SelectionAttributes.ID);
 			if(sa != null) { sa.unselect(); }
 		}
 		this.getView().repaint();

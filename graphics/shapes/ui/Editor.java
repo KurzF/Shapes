@@ -12,6 +12,7 @@ import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
 import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.FontAttributes;
+import graphics.shapes.attributes.ResizeAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
 public class Editor extends JFrame
@@ -33,7 +34,7 @@ public class Editor extends JFrame
 		});
 		
 		this.buildModel();
-		this.sview = new ShapesView(null);
+		this.sview = new ShapesView(this.model);
 		this.sview.setPreferredSize(new Dimension(300,300));
 		this.getContentPane().add(this.sview, java.awt.BorderLayout.CENTER);
 	}
@@ -47,15 +48,18 @@ public class Editor extends JFrame
 		SRectangle r = new SRectangle(new Point(10,10),20,30);
 		r.addAttributes(new ColorAttributes(false,true,Color.BLUE,Color.BLUE));
 		r.addAttributes(new SelectionAttributes());
+		r.addAttributes(new ResizeAttributes(r));
 		this.model.add(r);
-		
+		//r.setLoc(new Point(40,40));
+		System.out.println(r.getLoc());
 		
 		SCircle c = new SCircle(new Point(100,100),10);
 		c.addAttributes(new ColorAttributes(true,true,Color.BLUE,Color.BLUE));
 		c.addAttributes(new SelectionAttributes());
+		c.addAttributes(new ResizeAttributes(c));
 		this.model.add(c);
 		
-		SText t= new SText(new Point(100,100),"qpihfqhfljqgfkqsgfhkqgfhkqgfkq");
+		SText t= new SText(new Point(100,100),"Épihfqhfljqgfkqsgfhkqgfhkqgfkq");
 		t.addAttributes(new ColorAttributes(true,false,Color.YELLOW,Color.BLUE));
 		t.addAttributes(new FontAttributes());
 		t.addAttributes(new SelectionAttributes());

@@ -2,7 +2,6 @@ package graphics.shapes.ui;
 
 import java.awt.Graphics;
 
-import graphics.shapes.SCollection;
 import graphics.shapes.Shape;
 import graphics.ui.Controller;
 import graphics.ui.View;

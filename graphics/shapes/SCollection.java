@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import graphics.shapes.attributes.ResizeAttributes;
+
 public class SCollection extends Shape {
 
 	private ArrayList<Shape> collection;
@@ -38,6 +40,10 @@ public class SCollection extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.translate((int)(p.getX() - this.getLoc().getX()), (int)(p.getY() - this.getLoc().getY()));
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+		if(ra != null) {
+			ra.setLoc(p);
+		}
 	}
 
 	@Override
@@ -66,5 +72,11 @@ public class SCollection extends Shape {
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCollection(this);
+	}
+
+	@Override
+	public void grow(int dx, int dy) {
+		// TODO Auto-generated method stub
+		
 	}
 }

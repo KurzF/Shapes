@@ -7,7 +7,8 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 
 public class FontAttributes extends Attributes {
-
+	public static final String ID = "font";
+	
 	public Font font;
 	public Color font_color;
 	
@@ -21,7 +22,7 @@ public class FontAttributes extends Attributes {
 	
 	@Override
 	public String getID() {
-		return Attributes.FontID;
+		return FontAttributes.ID;
 	}
 	
 	public Color fontColor() {

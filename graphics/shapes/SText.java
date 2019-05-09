@@ -3,8 +3,8 @@ package graphics.shapes;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.FontAttributes;
+
 public class SText extends Shape {
 	
 	private String text;
@@ -39,16 +39,21 @@ public class SText extends Shape {
 
 	@Override
 	public Rectangle getBound() {
-		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
+		FontAttributes fa = (FontAttributes)this.getAttributes(FontAttributes.ID);
 		if(fa == null) { fa = new FontAttributes(); }
 		Rectangle r = fa.getBounds(this.text);
-		r.translate(this.loc.x, this.loc.y);
+		r.translate(this.loc.x, this.loc.y);//TODO remove and correct -3 
 		return r;
 	}
 
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitText(this);
+	}
+	@Override
+	public void grow(int dx, int dy) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

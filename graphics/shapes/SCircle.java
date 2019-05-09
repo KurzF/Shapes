@@ -3,14 +3,16 @@ package graphics.shapes;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import graphics.shapes.attributes.ResizeAttributes;
+
 public class SCircle extends Shape {
 	
-	private int radius;
+	private int diameter;
 	private Point loc; // top left corner of bound
 	
-	public SCircle(Point p, int radius) {
+	public SCircle(Point p, int diameter) {
 		this.setLoc(p);
-		this.setRadius(radius);
+		this.setDiameter(diameter);
 	}
 	
 	@Override
@@ -21,16 +23,24 @@ public class SCircle extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.loc = p;
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+		if(ra != null) {
+			ra.setLoc(p);
+		}
 	}
 
 	@Override
 	public void translate(int x, int y) {
 		this.loc.translate(x, y);
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+		if(ra != null) {
+			ra.translate(x, y);
+		}
 	}
 
 	@Override
 	public Rectangle getBound() {
-		return new Rectangle(this.loc.x, this.loc.y, this.radius*2, this.radius*2);
+		return new Rectangle(this.loc.x, this.loc.y, this.diameter, this.diameter);
 	}
 
 	@Override
@@ -38,11 +48,20 @@ public class SCircle extends Shape {
 		sv.visitCircle(this);
 	}
 
-	public int getRadius() {
-		return this.radius;
+	public int getDiameter() {
+		return this.diameter;
 	}
 	
-	public void setRadius(int r) {
-		this.radius = r;
+	public void setDiameter(int d) {
+		this.diameter = d;
+	}
+
+	@Override
+	public void grow(int dx, int dy) {
+		this.diameter += Math.abs(dx) < Math.abs(dy) ? dx : dy;
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+		if(ra != null) {
+			ra.refresh();
+		}
 	}
 }

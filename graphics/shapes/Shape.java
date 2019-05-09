@@ -25,12 +25,14 @@ public abstract class Shape {
 	
 	public abstract Point getLoc();
 	public abstract void setLoc(Point p);
+	
 	public abstract void translate(int x, int y);
 	public abstract Rectangle getBound();
+	public abstract void grow(int dx, int dy);
 	public abstract void accept(ShapeVisitor sv);
 	
 	public boolean isSelected() {// Shouldn't be here
-		SelectionAttributes sa = (SelectionAttributes)this.getAttributes(Attributes.SelectionID);
+		SelectionAttributes sa = (SelectionAttributes)this.getAttributes(SelectionAttributes.ID);
 		if(sa != null) {
 			return sa.isSelected();
 		}
