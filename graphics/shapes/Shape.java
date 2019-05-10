@@ -11,7 +11,7 @@ import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
 public abstract class Shape {
-	protected Map<String,Attributes> attributes; //TODO : private
+	private Map<String,Attributes> attributes; //TODO : private
 	
 	public Shape() {
 		this.attributes = new TreeMap<String,Attributes>();

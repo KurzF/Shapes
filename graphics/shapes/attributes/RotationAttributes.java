@@ -12,15 +12,15 @@ public class RotationAttributes extends Attributes{
 		return Attributes.RotationID;
 	}
 	
-	public RotationAttributes(int angl) {
-		this.angle=angl;
+	public RotationAttributes(int angle) {
+		this.angle=angle;
 	}
 	
 	public int getAngle() {
 		return angle;
 	}
 	
-	public void setRotation(int newRot) {
+	public void setAngle(int newRot) {
 		this.angle=newRot ;
 	}
 	
@@ -32,5 +32,8 @@ public class RotationAttributes extends Attributes{
 		this.angle-- ;
 	}
 
+	public void add(int dtheta) {
+		this.angle+=dtheta;
+	}
 
 }

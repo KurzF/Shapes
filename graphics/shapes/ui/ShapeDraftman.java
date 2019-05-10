@@ -24,7 +24,7 @@ public class ShapeDraftman implements ShapeVisitor {
 
 	public static ColorAttributes DEFAULTCOLORATTRIBUTES = new ColorAttributes();
 	public static FontAttributes DEFAULTFONTATTRIBUTES = new FontAttributes();
-	static private int handler_size = 5;
+	private static int handler_size = 5;
 	private Graphics2D g;
 	
 	public ShapeDraftman(Graphics g) {
@@ -125,7 +125,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		FontAttributes fa = (FontAttributes) t.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = ShapeDraftman.DEFAULTFONTATTRIBUTES; }
 		this.g.setColor(fa.fontColor());
-		this.g.setFont(fa.font);
+		this.g.setFont(fa.font());
 		this.g.drawString(t.getText(), t.getLoc().x, t.getLoc().y);
 		this.drawSelection(t);
 		this.g.setTransform(at);

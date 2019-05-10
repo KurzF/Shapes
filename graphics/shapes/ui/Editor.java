@@ -88,5 +88,7 @@ public class Editor extends JFrame
 		Editor self = new Editor();
 		self.pack();
 		self.setVisible(true);
+		self.sview.setFocusable(true);
+		self.sview.grabFocus();
 	}
 }
