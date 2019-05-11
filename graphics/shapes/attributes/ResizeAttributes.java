@@ -42,16 +42,11 @@ public class ResizeAttributes extends Attributes {
 			h.translate(dx, dy);
 		}
 	}
-	
-	public void setLoc(Point p) {
-		p.translate(-ResizeAttributes.size, -ResizeAttributes.size);
-		this.handlers.get(0).setLoc(p);
-	}
-	
+		
 	public void refresh() {
 		Point loc = this.handlers.get(0).getMaster().getLoc();
 		for (Handler h: this.handlers) {
-			h.setLoc(loc);
+			h.position();
 		}
 	}
 	

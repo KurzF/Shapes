@@ -3,6 +3,8 @@ package graphics.shapes;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import graphics.shapes.attributes.ResizeAttributes;
+
 public class SCircle extends Shape {
 	
 	private int radius;
@@ -26,6 +28,10 @@ public class SCircle extends Shape {
 	@Override
 	public void translate(int x, int y) {
 		this.loc.translate(x, y);
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+		if(ra != null) {
+			ra.translate(x, y);
+		}
 	}
 
 	@Override

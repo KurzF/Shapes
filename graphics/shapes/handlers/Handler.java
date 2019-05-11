@@ -11,15 +11,15 @@ import graphics.shapes.ui.ShapeController;
 
 public abstract class Handler extends Shape{
 	
-	private Shape master;
-	private Shape shape; //the handler shape
+	protected Shape master;
+	protected Shape shape; //the handler shape
 	
 	public Handler(Shape master) {
 		this.master = master;
 	}
 	
 	public abstract void modifier(int dx, int dy);
-	//public abstract void setLoc(Point p);
+	public abstract void position();
 	
 	public Point getLoc() {
 		return this.shape.getLoc();
@@ -29,10 +29,13 @@ public abstract class Handler extends Shape{
 		this.shape.translate(x, y);
 	}
 	
-	public Rectangle getBound() {
-		return this.shape.getBound();
+	public Rectangle getBounds() {
+		return this.shape.getBounds();
 	}
 	
+	public Point getCenter() {
+		return this.shape.getCenter();
+	}
 	
 	public Shape getShape() {
 		return this.shape;

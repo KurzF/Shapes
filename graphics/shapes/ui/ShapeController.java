@@ -4,12 +4,14 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 
 import graphics.ui.Controller;
 import graphics.ui.View;
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
+import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.ResizeAttributes;
 import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
@@ -27,7 +29,7 @@ public class ShapeController extends Controller {
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		System.out.println("press");
+		System.out.println("press"+this.state);
 		this.press_position = e.getPoint();
 		if(this.state == 1) {
 			this.setTarget(this.press_position);
@@ -41,30 +43,30 @@ public class ShapeController extends Controller {
 	}
 	
 	public void mouseReleased(MouseEvent e) {
-		System.out.println("release");
+		System.out.println("release"+this.state);
 		if(this.state == 3) {
 			this.state = 1;
 		}
 	}
 	
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("click");
+		System.out.println("press" + this.state);
 		if(this.state == 1) {
 			if(!e.isShiftDown()) {
 				this.unselectAll();
 			}
-			
+			this.setTarget(e.getLocationOnScreen());
 			if(this.target != null) {
 				SelectionAttributes sa;
 				if(this.target instanceof Handler) {
 					Handler h = (Handler) this.target;
-					sa = (SelectionAttributes)h.getMaster().getAttributes(SelectionAttributes.ID);
+					sa = (SelectionAttributes)h.getMaster().getAttributes(Attributes.SelectionID);
 					if(sa != null) {
 						sa.toggleSelection();
 						this.getView().repaint();
 					}
 				}
-				sa = (SelectionAttributes)this.target.getAttributes(SelectionAttributes.ID);
+				sa = (SelectionAttributes)this.target.getAttributes(Attributes.SelectionID);
 				if(sa != null) {
 					sa.toggleSelection();
 					this.getView().repaint();
@@ -83,24 +85,25 @@ public class ShapeController extends Controller {
 	}
 	
 	public void mouseMoved(MouseEvent e) {
-		System.out.println("move");
+		System.out.println("move"+this.state);
 	}
 	
 	public void mouseDragged(MouseEvent e) {
-		System.out.println("drag");
-		int dx = e.getX() - this.press_position.x;
-		int dy = e.getY() - this.press_position.y;
+		System.out.println("drag"+this.state);
+		Point2D movement = new Point(e.getX() - this.press_position.x, e.getY() - this.press_position.y);
+		System.out.println(movement);
 		this.press_position = e.getPoint();
 		if(this.state == 1) {
 			if(this.target instanceof Handler) {
-				((Handler)this.target).modifier(dx, dy);
+				((Handler)this.target).setLoc(this.press_position);
 			}
 			else {
-				this.translateSelected(dx, dy);
+				this.translateSelected((int)movement.getX(), (int)movement.getY());
 			}
 		}
+		
 		if(this.state == 3) {
-			((Shape)this.getModel()).translate(dx, dy);
+			((Shape)this.getModel()).translate((int)movement.getX(), (int)movement.getY());
 		}
 		this.getView().repaint();
 	}
@@ -116,15 +119,16 @@ public class ShapeController extends Controller {
 	            // handle down 
 	            break;
 	        case KeyEvent.VK_LEFT:
-	        	rotateSelected(+1);
+	        	rotateSelected(-1);
 	            this.getView().repaint();
 	            break;
 	        case KeyEvent.VK_RIGHT :
-	            rotateSelected(-1);
+	            rotateSelected(1);
 	            this.getView().repaint();
 	            break;
 	     }
-	} 
+	}
+	
 	private void translateSelected(int x, int y) {
 		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
@@ -155,7 +159,7 @@ public class ShapeController extends Controller {
 	}
 	
 	private void setTarget(Point p) {
-		if(this.getModel() == null) { return null; }
+		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
@@ -164,27 +168,51 @@ public class ShapeController extends Controller {
 				rot= new RotationAttributes();
 			}
 			if(rot.getAngle()==0){
+				ResizeAttributes ra = ((ResizeAttributes)s.getAttributes(Attributes.ResizeID));
+				if(ra != null) {
+					Iterator<Handler> h = ra.iterator();
+					while(h.hasNext()) {
+						Shape hand = h.next();
+						if(hand.getBounds().contains(p)) {
+							this.target = hand;
+							return;
+						}
+					}
+				}
 				if(s.getBounds().contains(p)) {
-				return s;
+					this.target = s;
+					return;
 				}
 			}
 			else{
 				AffineTransform tx = new AffineTransform();
 				Point center = s.getCenter();
 				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
+				ResizeAttributes ra = ((ResizeAttributes)s.getAttributes(Attributes.ResizeID));
+				if(ra != null) {
+					Iterator<Handler> h = ra.iterator();
+					while(h.hasNext()) {
+						Shape hand = h.next();
+						if(hand.getBounds().contains(tx.transform(p,null))) {
+							this.target = hand;
+							return;
+						}
+					}
+				}
 				if(s.getBounds().contains(tx.transform(p,null))) {
-					return s;
+					this.target = s;
+					return;
 				}
 			}
 		}
-		return null;
+		return;
 	}
 
 	private void unselectAll() {
 		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
-			SelectionAttributes sa = (SelectionAttributes)i.next().getAttributes(SelectionAttributes.ID);
+			SelectionAttributes sa = (SelectionAttributes)i.next().getAttributes(Attributes.SelectionID);
 			if(sa != null) { sa.unselect(); }
 		}
 		this.getView().repaint();

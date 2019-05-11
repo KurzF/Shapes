@@ -3,7 +3,9 @@ package graphics.shapes.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import graphics.shapes.SCircle;
@@ -12,9 +14,11 @@ import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
 import graphics.shapes.Shape;
 import graphics.shapes.ShapeVisitor;
+import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.FontAttributes;
 import graphics.shapes.attributes.ResizeAttributes;
+import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 import graphics.shapes.handlers.Handler;
 
@@ -30,16 +34,16 @@ public class ShapeDraftman implements ShapeVisitor {
 	}
 	
 	private void drawSelection(Shape s) {
-		SelectionAttributes sa = (SelectionAttributes) s.getAttributes(SelectionAttributes.ID);
+		SelectionAttributes sa = (SelectionAttributes) s.getAttributes(Attributes.SelectionID);
 		if(sa != null && sa.isSelected()) {
-			Rectangle r = s.getBound();
+			Rectangle r = s.getBounds();
 			this.g.setColor(Color.BLACK);
 			//this.g.drawRect(r.x-ShapeDraftman.handler_size, r.y-ShapeDraftman.handler_size, ShapeDraftman.handler_size, ShapeDraftman.handler_size );
 			//this.g.drawRect(r.x-ShapeDraftman.handler_size, r.y+r.height, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
 			//this.g.drawRect(r.x+r.width, r.y+r.height, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
 			//this.g.drawRect(r.x+r.width, r.y-ShapeDraftman.handler_size, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
 			if(s.getAttributes(ResizeAttributes.ID)!=null) {
-				Iterator<Handler> i = ((ResizeAttributes)s.getAttributes(ResizeAttributes.ID)).iterator();
+				Iterator<Handler> i = ((ResizeAttributes)s.getAttributes(Attributes.ResizeID)).iterator();
 				while(i.hasNext()) {
 					i.next().accept(this);
 				}
@@ -131,9 +135,5 @@ public class ShapeDraftman implements ShapeVisitor {
 		this.g.drawString(t.getText(), t.getLoc().x, t.getLoc().y);
 		this.drawSelection(t);
 		this.g.setTransform(at);
-	}
-	
-	public FontRenderContext getFontRenderContext() {
-		return g.getFontRenderContext();
 	}
 }
