@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
@@ -36,7 +37,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		
 		SelectionAttributes sa = (SelectionAttributes) s.getAttributes(Attributes.SelectionID);
 		if(sa != null && sa.isSelected()) {
-			Rectangle r = s.getBound();
+			Rectangle r = s.getBounds();
 			this.g.setColor(Color.BLACK);
 			this.g.drawRect(r.x-ShapeDraftman.handler_size, r.y-ShapeDraftman.handler_size, ShapeDraftman.handler_size, ShapeDraftman.handler_size );
 			this.g.drawRect(r.x+r.width, r.y+r.height, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
@@ -116,11 +117,11 @@ public class ShapeDraftman implements ShapeVisitor {
 		g.rotate(Math.toRadians(rot.getAngle()),center.x, center.y);
 		if(ca.filled()) { 
 			this.g.setColor(ca.filledColor());
-			this.g.fill(t.getBound());
+			this.g.fill(t.getBounds());
 		}
 		if(ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
-			this.g.draw(t.getBound());
+			this.g.draw(t.getBounds());
 		}
 		FontAttributes fa = (FontAttributes) t.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = ShapeDraftman.DEFAULTFONTATTRIBUTES; }
@@ -131,5 +132,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		this.g.setTransform(at);
 	}
 	
-
+	public FontRenderContext getFontRenderContext() {
+		return g.getFontRenderContext();
+	}
 }

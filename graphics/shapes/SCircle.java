@@ -29,7 +29,7 @@ public class SCircle extends Shape {
 	}
 
 	@Override
-	public Rectangle getBound() {
+	public Rectangle getBounds() {
 		return new Rectangle(this.loc.x, this.loc.y, this.radius*2, this.radius*2);
 	}
 	

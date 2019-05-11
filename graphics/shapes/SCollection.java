@@ -55,18 +55,18 @@ public class SCollection extends Shape {
 	}
 
 	@Override
-	public Rectangle getBound() {
+	public Rectangle getBounds() {
 		Iterator<Shape> i = this.iterator();
 		if(!i.hasNext()) {
 			return new Rectangle(0,0,0,0);
 		}
-		Rectangle r = i.next().getBound();
+		Rectangle r = i.next().getBounds();
 		Point bottom_right = r.getLocation();
 		Point top_left = r.getLocation();
 		bottom_right.translate(r.width, r.height);
 		while(i.hasNext()) {
 			Shape s=i.next();
-			r = s.getBound();
+			r = s.getBounds();
 			if(r.x < top_left.x) { top_left.x = r.x; }
 			if(r.y < top_left.y) { top_left.y = r.y; }
 			if(r.width + r.x > bottom_right.x) { bottom_right.x = r.width + r.x; }
@@ -77,7 +77,7 @@ public class SCollection extends Shape {
 	
 	@Override
 	public Point getCenter() {
-		Rectangle rect = this.getBound();
+		Rectangle rect = this.getBounds();
 		Point loc = rect.getLocation();
 		loc.translate(rect.width/2, rect.height/2);
 		return loc;

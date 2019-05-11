@@ -145,7 +145,7 @@ public class ShapeController extends Controller {
 				rot= new RotationAttributes();
 			}
 			if(rot.getAngle()==0){
-				if(s.getBound().contains(p)) {
+				if(s.getBounds().contains(p)) {
 				return s;
 				}
 			}
@@ -153,7 +153,7 @@ public class ShapeController extends Controller {
 				AffineTransform tx = new AffineTransform();
 				Point center = s.getCenter();
 				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
-				if(s.getBound().contains(tx.transform(p,null))) {
+				if(s.getBounds().contains(tx.transform(p,null))) {
 					return s;
 				}
 			}

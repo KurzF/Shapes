@@ -42,7 +42,7 @@ public class SRectangle extends Shape {
 	}
 
 	@Override
-	public Rectangle getBound() {
+	public Rectangle getBounds() {
 		return this.rect;
 	}
 	

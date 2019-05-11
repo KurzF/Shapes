@@ -38,7 +38,7 @@ public class SText extends Shape {
 	}
 
 	@Override
-	public Rectangle getBound() {
+	public Rectangle getBounds() {
 		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = new FontAttributes(); }
 		Rectangle r = fa.getBounds(this.text);
@@ -48,7 +48,7 @@ public class SText extends Shape {
 	
 	@Override
 	public Point getCenter() {
-		Rectangle rect = this.getBound();
+		Rectangle rect = this.getBounds();
 		Point p = this.getLoc();
 		p.translate(rect.width/2, rect.height/2);
 		return p;
