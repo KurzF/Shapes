@@ -98,11 +98,11 @@ public class ShapeController extends Controller {
 	            // handle down 
 	            break;
 	        case KeyEvent.VK_LEFT:
-	        	rotateSelected(+1);
+	        	rotateSelected(-1);
 	            this.getView().repaint();
 	            break;
 	        case KeyEvent.VK_RIGHT :
-	            rotateSelected(-1);
+	            rotateSelected(+1);
 	            this.getView().repaint();
 	            break;
 	     }
@@ -122,13 +122,20 @@ public class ShapeController extends Controller {
 	
 	
 	public void rotateSelected(int dtheta) {
-		Iterator<Shape> it= ((SCollection) this.getModel()).iterator();
-		while(it.hasNext()) {
-			Shape s = it.next();
-			if(s.isSelected()) {
-				RotationAttributes rot = (RotationAttributes) s.getAttributes(Attributes.RotationID);
-				if(rot != null) {
-					rot.add(dtheta);
+		SCollection model = (SCollection) this.getModel();
+		Shape s;
+		
+		for (Iterator<Shape> it = model.iterator(); it.hasNext();) {
+			s = it.next();
+			if ((RotationAttributes) s.getAttributes(Attributes.RotationID) == null) {
+				s.addAttributes(new RotationAttributes());
+			}
+			if (((SelectionAttributes) s.getAttributes(Attributes.SelectionID)).isSelected()) {
+				if (dtheta==1) {
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).incrAngle();
+				}
+				if (dtheta==-1) {
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).decrAngle();
 				}
 			}
 		}	
@@ -151,8 +158,7 @@ public class ShapeController extends Controller {
 			}
 			else{
 				AffineTransform tx = new AffineTransform();
-				Point center = s.getCenter();
-				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
+				tx.rotate(Math.toRadians(-rot.getAngle()),s.getLoc().x+s.getBound().width/2,s.getLoc().y+s.getBound().height/2);
 				if(s.getBound().contains(tx.transform(p,null))) {
 					return s;
 				}

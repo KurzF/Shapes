@@ -48,7 +48,6 @@ public class Editor extends JFrame
 		SRectangle r = new SRectangle(new Point(20,10),50,80);
 		r.addAttributes(new ColorAttributes(false,true,Color.RED,Color.RED));
 		r.addAttributes(new SelectionAttributes());
-		r.addAttributes(new RotationAttributes(20));
 		this.model.add(r);
 		
 		
@@ -59,10 +58,11 @@ public class Editor extends JFrame
 		this.model.add(c);
 		c.addAttributes(new ColorAttributes(true,false,Color.RED,Color.BLACK));
 		
-		SText t= new SText(new Point(100,80),"Épihfqhfljqgfkqsgfhkqgfhkqgfkq");
+		SText t= new SText(new Point(100,80),"qpihfqhfljqgfkqsgfhkqgfhkqgfkq");
 		t.addAttributes(new ColorAttributes(true,false,Color.YELLOW,Color.BLUE));
 		t.addAttributes(new FontAttributes());
 		t.addAttributes(new SelectionAttributes());
+		t.addAttributes(new RotationAttributes(40));
 		this.model.add(t);
 		
 		SCollection sc = new SCollection();
@@ -79,7 +79,6 @@ public class Editor extends JFrame
 		c.addAttributes(new ColorAttributes(false,true,Color.BLUE,Color.DARK_GRAY));
 		c.addAttributes(new SelectionAttributes());
 		sc.add(c);
-		sc.addAttributes(new RotationAttributes(70));
 		this.model.add(sc);
 	}
 	

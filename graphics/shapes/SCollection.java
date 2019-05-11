@@ -74,15 +74,7 @@ public class SCollection extends Shape {
 		}
 		return new Rectangle(top_left.x, top_left.y,bottom_right.x-top_left.x,bottom_right.y-top_left.y);
 	}
-	
-	@Override
-	public Point getCenter() {
-		Rectangle rect = this.getBound();
-		Point loc = rect.getLocation();
-		loc.translate(rect.width/2, rect.height/2);
-		return loc;
-	}
-	
+
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCollection(this);

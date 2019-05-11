@@ -8,7 +8,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 
 public class SRectangle extends Shape {
 	private Rectangle rect;
@@ -46,12 +45,6 @@ public class SRectangle extends Shape {
 		return this.rect;
 	}
 	
-	@Override
-	public Point getCenter() {
-		Point p = this.getLoc();
-		p.translate(this.rect.width/2, this.rect.height/2);
-		return p;
-	}
 	public void accept(ShapeVisitor vs) {
 		vs.visitRectangle(this);
 	}

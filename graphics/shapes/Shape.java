@@ -11,7 +11,7 @@ import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
 public abstract class Shape {
-	private Map<String,Attributes> attributes; //TODO : private
+	protected Map<String,Attributes> attributes; //TODO : private
 	
 	public Shape() {
 		this.attributes = new TreeMap<String,Attributes>();
@@ -29,7 +29,6 @@ public abstract class Shape {
 	public abstract void setLoc(Point p);
 	public abstract void translate(int x, int y);
 	public abstract Rectangle getBound();
-	public abstract Point getCenter();
 	public abstract void accept(ShapeVisitor sv);
 	
 	public boolean isSelected() {// Shouldn't be here
