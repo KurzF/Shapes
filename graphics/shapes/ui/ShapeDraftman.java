@@ -47,61 +47,93 @@ public class ShapeDraftman implements ShapeVisitor {
 		}
 	}
 	
-	@Override
 	public void visitRectangle(SRectangle rect) {
-		ColorAttributes ca = (ColorAttributes) rect.getAttributes(ColorAttributes.ID);
-		if(ca == null) { ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; }
+		ColorAttributes ca = (ColorAttributes) rect.getAttributes(Attributes.ColorID);
+		RotationAttributes rot = (RotationAttributes) rect.getAttributes(Attributes.RotationID);
+		if(ca == null) { 
+			ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; 
+		}
+		if (rot == null) {
+			rot = new RotationAttributes();
+		}
+		AffineTransform at = g.getTransform();
+		Point center = rect.getCenter();
+		this.g.rotate(Math.toRadians(rot.getAngle()),center.x, center.y);
 		if(ca.filled()) { 
 			this.g.setColor(ca.filledColor());
 			this.g.fill(rect.getRect());
 		}
 		if(ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
-			this.g.draw(rect.getRect());
 		}
+		this.g.draw(rect.getRect());
 		this.drawSelection(rect);
+		this.g.setTransform(at); //remove transform
 	}
+	
+	
 	
 	public void visitCollection(SCollection c) {
 		Iterator<Shape> i = c.iterator();
+		Point location=c.getLoc();
+		RotationAttributes rot = (RotationAttributes) c.getAttributes(Attributes.RotationID);
+		if (rot == null) {
+			rot = new RotationAttributes();
+		}
+		AffineTransform at = g.getTransform();
+		Point center = c.getCenter();
+		g.rotate(Math.toRadians(rot.getAngle()),center.x, center.y);
 		while(i.hasNext()) {
 			i.next().accept(this);
 		}
 		this.drawSelection(c);
+		this.g.setTransform(at);
 	}
 	
 	public void visitCircle(SCircle c) {
-		ColorAttributes ca = (ColorAttributes) c.getAttributes(ColorAttributes.ID);
+		ColorAttributes ca = (ColorAttributes) c.getAttributes(Attributes.ColorID);
 		if(ca == null) { ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; }
 		if(ca.filled()) {
 			this.g.setColor(ca.filledColor());
-			this.g.fillOval(c.getLoc().x,c.getLoc().y, c.getRadius(), c.getRadius());
+			this.g.fillOval(c.getLoc().x,c.getLoc().y, c.getRadius()*2, c.getRadius()*2);
 		}
 		if(ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
-			this.g.drawOval(c.getLoc().x,  c.getLoc().y,  c.getRadius(), c.getRadius());
+			this.g.drawOval(c.getLoc().x,  c.getLoc().y,  c.getRadius()*2, c.getRadius()*2);
 		}
-		this.drawSelection(c);
+		drawSelection(c);
 	}
 	
 	public void visitText(SText t) {
-			
-		ColorAttributes ca = (ColorAttributes) t.getAttributes(ColorAttributes.ID);
+		Point location=t.getLoc();
+		RotationAttributes rot = (RotationAttributes) t.getAttributes("rotation");
+		ColorAttributes ca = (ColorAttributes) t.getAttributes(Attributes.ColorID);
 		if(ca == null) { ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; }
+		if (rot == null) {
+			rot= new RotationAttributes();
+		}
+		
+		AffineTransform at = g.getTransform();
+		Point center = t.getCenter();
+		g.rotate(Math.toRadians(rot.getAngle()),center.x, center.y);
 		if(ca.filled()) { 
 			this.g.setColor(ca.filledColor());
-			this.g.fill(t.getBound());
+			this.g.fill(t.getBounds());
 		}
 		if(ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
-			this.g.draw(t.getBound());
+			this.g.draw(t.getBounds());
 		}
-		FontAttributes fa = (FontAttributes) t.getAttributes(FontAttributes.ID);
+		FontAttributes fa = (FontAttributes) t.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = ShapeDraftman.DEFAULTFONTATTRIBUTES; }
 		this.g.setColor(fa.fontColor());
-		this.g.setFont(fa.font);
+		this.g.setFont(fa.font());
 		this.g.drawString(t.getText(), t.getLoc().x, t.getLoc().y);
-		
 		this.drawSelection(t);
+		this.g.setTransform(at);
+	}
+	
+	public FontRenderContext getFontRenderContext() {
+		return g.getFontRenderContext();
 	}
 }

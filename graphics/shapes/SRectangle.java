@@ -1,9 +1,14 @@
 package graphics.shapes;
 
+import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.ColorAttributes;
+import graphics.shapes.attributes.RotationAttributes;
+
 import java.awt.Point;
 import java.awt.Rectangle;
-
-import graphics.shapes.attributes.ResizeAttributes;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 
 public class SRectangle extends Shape {
 	private Rectangle rect;
@@ -29,31 +34,25 @@ public class SRectangle extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.rect.setLocation(p);
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
-		if(ra != null) {
-			ra.setLoc(p);
-		}
 	}
 
 	@Override
 	public void translate(int x, int y) {
 		this.rect.translate(x, y);
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
-		if(ra != null) {
-			ra.translate(x, y);
-		}
 	}
 
 	@Override
-	public Rectangle getBound() {
+	public Rectangle getBounds() {
 		return this.rect;
 	}
 	
-	public void accept(ShapeVisitor vs) {
-		vs.visitRectangle(this);
+	@Override
+	public Point getCenter() {
+		Point p = this.getLoc();
+		p.translate(this.rect.width/2, this.rect.height/2);
+		return p;
 	}
-
-
+	
 	@Override
 	public void grow(int dx, int dy) {
 		this.getRect().width += dx;
@@ -62,5 +61,8 @@ public class SRectangle extends Shape {
 		if(ra != null) {
 			ra.refresh();
 		}
+	}
+	public void accept(ShapeVisitor vs) {
+		vs.visitRectangle(this);
 	}
 }

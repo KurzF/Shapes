@@ -7,10 +7,9 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 
 public class FontAttributes extends Attributes {
-	public static final String ID = "font";
-	
-	public Font font;
-	public Color font_color;
+
+	private Font font;
+	private Color font_color;
 	
 	public FontAttributes() {
 		this(new Font("Ariel", Font.PLAIN, 12), Color.BLACK);
@@ -22,9 +21,12 @@ public class FontAttributes extends Attributes {
 	
 	@Override
 	public String getID() {
-		return FontAttributes.ID;
+		return Attributes.FontID;
 	}
 	
+	public Font font() {
+		return this.font;
+	}
 	public Color fontColor() {
 		return this.font_color;
 	}

@@ -1,11 +1,14 @@
 package graphics.shapes;
 
+import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.RotationAttributes;
+
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import graphics.shapes.attributes.ResizeAttributes;
 
 public class SCollection extends Shape {
 
@@ -28,6 +31,7 @@ public class SCollection extends Shape {
 	public Point getLoc() {
 		//The location is the top left point
 		Iterator<Shape> i = this.iterator();
+		if(!i.hasNext()) { return new Point(0,0); }
 		Point loc = i.next().getLoc();
 		while(i.hasNext()) {
 			Point p = i.next().getLoc();
@@ -39,11 +43,7 @@ public class SCollection extends Shape {
 
 	@Override
 	public void setLoc(Point p) {
-		this.translate((int)(p.getX() - this.getLoc().getX()), (int)(p.getY() - this.getLoc().getY()));
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
-		if(ra != null) {
-			ra.setLoc(p);
-		}
+		this.translate(p.x - this.getLoc().x, p.y - this.getLoc().y);
 	}
 
 	@Override
@@ -55,28 +55,42 @@ public class SCollection extends Shape {
 	}
 
 	@Override
-	public Rectangle getBound() {
-		Point loc = this.getLoc();
+	public Rectangle getBounds() {
 		Iterator<Shape> i = this.iterator();
-		Rectangle r = i.next().getBound();
+		if(!i.hasNext()) {
+			return new Rectangle(0,0,0,0);
+		}
+		Rectangle r = i.next().getBounds();
 		Point bottom_right = r.getLocation();
+		Point top_left = r.getLocation();
 		bottom_right.translate(r.width, r.height);
 		while(i.hasNext()) {
-			r = i.next().getBound();
+			Shape s=i.next();
+			r = s.getBounds();
+			if(r.x < top_left.x) { top_left.x = r.x; }
+			if(r.y < top_left.y) { top_left.y = r.y; }
 			if(r.width + r.x > bottom_right.x) { bottom_right.x = r.width + r.x; }
 			if(r.height + r.y > bottom_right.y) { bottom_right.y = r.height + r.y; }
 		}
-		return new Rectangle(loc.x, loc.y,bottom_right.x-loc.x,bottom_right.y-loc.y);
+		return new Rectangle(top_left.x, top_left.y,bottom_right.x-top_left.x,bottom_right.y-top_left.y);
+	}
+	
+	@Override
+	public Point getCenter() {
+		Rectangle rect = this.getBounds();
+		Point loc = rect.getLocation();
+		loc.translate(rect.width/2, rect.height/2);
+		return loc;
+	}
+	
+	@Override
+	public void grow(int dx, int dy) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCollection(this);
-	}
-
-	@Override
-	public void grow(int dx, int dy) {
-		// TODO Auto-generated method stub
-		
 	}
 }

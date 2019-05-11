@@ -1,17 +1,17 @@
 package graphics.shapes.ui;
 
 import java.awt.Point;
-import java.awt.event.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import graphics.ui.Controller;
 import graphics.ui.View;
-
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
 import graphics.shapes.attributes.ResizeAttributes;
+import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 import graphics.shapes.handlers.Handler;
 
@@ -105,10 +105,26 @@ public class ShapeController extends Controller {
 		this.getView().repaint();
 	}
 	
-	public void keyPressed(KeyEvent evt) {
-		System.out.println(evt.getKeyChar());
-	}
-	
+	public void keyPressed(KeyEvent e) {
+		System.out.println("press");
+	    int keyCode = e.getKeyCode();
+	    switch( keyCode ) { 
+	        case KeyEvent.VK_UP:
+	            // handle up 
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            // handle down 
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        	rotateSelected(+1);
+	            this.getView().repaint();
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	            rotateSelected(-1);
+	            this.getView().repaint();
+	            break;
+	     }
+	} 
 	private void translateSelected(int x, int y) {
 		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
@@ -121,35 +137,49 @@ public class ShapeController extends Controller {
 		this.getView().repaint();
 	}
 	
+	public void rotateSelected(int dtheta) {
+		Iterator<Shape> it= ((SCollection) this.getModel()).iterator();
+		while(it.hasNext()) {
+			Shape s = it.next();
+			if(s.isSelected()) {
+				RotationAttributes rot = (RotationAttributes) s.getAttributes(Attributes.RotationID);
+				if(rot != null) {
+					rot.add(dtheta);
+				}
+			}
+		}	
+	}
+
 	private Shape getTarget() {
 		return this.target;
 	}
 	
 	private void setTarget(Point p) {
-		if(this.getModel() == null) { this.target = null; return; }
+		if(this.getModel() == null) { return null; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
 		while(i.hasNext()) {
 			Shape s = i.next();
-			ResizeAttributes ra = ((ResizeAttributes)s.getAttributes(ResizeAttributes.ID));
-			if(ra != null) {
-				Iterator<Handler> h = ra.iterator();
-				while(h.hasNext()) {
-					Shape hand = h.next();
-					if(hand.getBound().contains(p)) {
-						this.target = hand;
-						return;
-					}
+			RotationAttributes rot = (RotationAttributes) s.getAttributes(Attributes.RotationID);
+			if (rot == null) {
+				rot= new RotationAttributes();
+			}
+			if(rot.getAngle()==0){
+				if(s.getBounds().contains(p)) {
+				return s;
 				}
 			}
-			if(s.getBound().contains(p)) {
-				this.target = s;
-				return;
+			else{
+				AffineTransform tx = new AffineTransform();
+				Point center = s.getCenter();
+				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
+				if(s.getBounds().contains(tx.transform(p,null))) {
+					return s;
+				}
 			}
 		}
-		this.target = null;
-		System.out.println(this.target);
+		return null;
 	}
-	
+
 	private void unselectAll() {
 		if(this.getModel() == null) { return; }
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();

@@ -1,7 +1,6 @@
 package graphics.shapes.attributes;
 
 public class SelectionAttributes extends Attributes {
-	public static final String ID = "selection";
 	private boolean selected;
 	
 	public SelectionAttributes() {
@@ -13,7 +12,7 @@ public class SelectionAttributes extends Attributes {
 	}
 
 	public String getID() {
-		return SelectionAttributes.ID;
+		return Attributes.SelectionID;
 	}
 	
 	public boolean isSelected() {

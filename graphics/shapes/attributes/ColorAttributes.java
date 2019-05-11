@@ -3,8 +3,7 @@ package graphics.shapes.attributes;
 import java.awt.Color;
 
 public class ColorAttributes extends Attributes {
-	public static final String ID = "color";
-	
+
 	private boolean fill;
 	private boolean stroke;
 	private Color fill_color;
@@ -23,7 +22,7 @@ public class ColorAttributes extends Attributes {
 	
 	@Override
 	public String getID() {
-		return ColorAttributes.ID;
+		return Attributes.ColorID;
 	}
 
 	public boolean filled() {
