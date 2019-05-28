@@ -1,5 +1,6 @@
 package graphics.shapes.ui;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -8,9 +9,12 @@ import java.util.Iterator;
 
 import graphics.ui.Controller;
 import graphics.ui.View;
+import graphics.shapes.SCircle;
+import graphics.shapes.SRectangle;
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
 import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
 
@@ -18,11 +22,13 @@ public class ShapeController extends Controller {
 	
 	private int state;
 	private Point press_position;//to drag shape
+	private SCollection clipboard;
 	
 	public ShapeController(Object model, View view) {
 		super(model);
 		this.setView(view);
 		this.state = 1;
+		this.clipboard=new SCollection();
 	}
 	
 	public void mousePressed(MouseEvent e) {
@@ -37,6 +43,7 @@ public class ShapeController extends Controller {
 				this.state =1;
 			}
 		}
+		System.out.println(this.getTarget(this.press_position));
 	}
 	
 	public void mouseReleased(MouseEvent e) {
@@ -67,6 +74,7 @@ public class ShapeController extends Controller {
 	
 	public void mouseExit(MouseEvent e) {
 		System.out.println("exit");
+
 	}
 	
 	public void mouseMoved(MouseEvent e) {
@@ -87,26 +95,71 @@ public class ShapeController extends Controller {
 		System.out.println("key");
 	}
 	
+	
 	public void keyPressed(KeyEvent e) {
 		System.out.println("press");
 	    int keyCode = e.getKeyCode();
 	    switch( keyCode ) { 
 	        case KeyEvent.VK_UP:
-	            // handle up 
+	            System.out.println((SCollection)this.getModel());
 	            break;
 	        case KeyEvent.VK_DOWN:
 	            // handle down 
 	            break;
 	        case KeyEvent.VK_LEFT:
-	        	rotateSelected(+1);
+	        	rotateSelected(-1);
 	            this.getView().repaint();
 	            break;
-	        case KeyEvent.VK_RIGHT :
-	            rotateSelected(-1);
+	        case KeyEvent.VK_RIGHT:
+	        	rotateSelected(1);
 	            this.getView().repaint();
 	            break;
-	     }
+	    	case KeyEvent.VK_CONTROL :
+	    		System.out.println("ctrl");
+	    		this.state=4;
+	    		break;
+	    }
+	    if(this.state==4){
+	    	switch( keyCode ) { 
+	    		case KeyEvent.VK_C :
+	    			System.out.println("copied");
+	    			copySelected(this.clipboard);
+	    			break;
+	    		case KeyEvent.VK_V :
+	    			System.out.println("pasted");
+	    			pasteCopy(this.clipboard); 
+	    			this.getView().repaint();
+	    			break;
+	    	}
+	    }
 	} 
+	
+	
+	
+	
+	public void copySelected(SCollection col){ //copy the selected shapes into a new SCollection
+		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
+		while(i.hasNext()) {
+			Shape s = i.next();
+			SelectionAttributes sa = (SelectionAttributes)s.getAttributes(Attributes.SelectionID);
+			if(sa != null && sa.isSelected()) {
+				col.add(s.clone());
+			}
+		}
+	}
+	
+	
+	public void pasteCopy(SCollection sc){ 
+		Iterator<Shape> i = sc.iterator();
+		while(i.hasNext()) {
+			Shape s = i.next();
+			((SCollection)this.getModel()).add(s);
+		}
+		this.clipboard=new SCollection();
+	}
+	
+	
+	
 	
 	private void translateSelected(int x, int y) {
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
@@ -122,13 +175,23 @@ public class ShapeController extends Controller {
 	
 	
 	public void rotateSelected(int dtheta) {
-		Iterator<Shape> it= ((SCollection) this.getModel()).iterator();
-		while(it.hasNext()) {
-			Shape s = it.next();
-			if(s.isSelected()) {
-				RotationAttributes rot = (RotationAttributes) s.getAttributes(Attributes.RotationID);
-				if(rot != null) {
-					rot.add(dtheta);
+		SCollection model = (SCollection) this.getModel();
+		Shape s;
+		
+		for (Iterator<Shape> it = model.iterator(); it.hasNext();) {
+			s = it.next();
+			if ((RotationAttributes) s.getAttributes(Attributes.RotationID) == null) {
+				s.addAttributes(new RotationAttributes());
+			}
+			if ((SelectionAttributes) s.getAttributes(Attributes.SelectionID) == null) {
+				s.addAttributes(new SelectionAttributes());
+			}
+			if (((SelectionAttributes) s.getAttributes(Attributes.SelectionID)).isSelected()) {
+				if (dtheta==1) {
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).incrAngle();
+				}
+				if (dtheta==-1) {
+					((RotationAttributes) s.getAttributes(Attributes.RotationID)).decrAngle();
 				}
 			}
 		}	
@@ -145,15 +208,14 @@ public class ShapeController extends Controller {
 				rot= new RotationAttributes();
 			}
 			if(rot.getAngle()==0){
-				if(s.getBounds().contains(p)) {
+				if(s.getBound().contains(p)) {
 				return s;
 				}
 			}
 			else{
 				AffineTransform tx = new AffineTransform();
-				Point center = s.getCenter();
-				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
-				if(s.getBounds().contains(tx.transform(p,null))) {
+				tx.rotate(Math.toRadians(-rot.getAngle()),s.getLoc().x+s.getBound().width/2,s.getLoc().y+s.getBound().height/2);
+				if(s.getBound().contains(tx.transform(p,null))) {
 					return s;
 				}
 			}

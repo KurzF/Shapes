@@ -31,4 +31,7 @@ public class SelectionAttributes extends Attributes {
 		this.selected = !this.selected;
 	}
 	
+	public Attributes clone(){
+		return new SelectionAttributes(false);
+	}
 }

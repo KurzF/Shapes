@@ -2,12 +2,15 @@ package graphics.shapes.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
 import graphics.shapes.SCircle;
 import graphics.shapes.SCollection;
+import graphics.shapes.SImage;
 import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
 import graphics.shapes.attributes.ColorAttributes;
@@ -45,24 +48,22 @@ public class Editor extends JFrame
 		this.model = new SCollection();
 		this.model.addAttributes(new SelectionAttributes());
 		
-		SRectangle r = new SRectangle(new Point(20,10),50,80);
+		
+		SRectangle r = new SRectangle(new Point(100,100),50,80);
 		r.addAttributes(new ColorAttributes(false,true,Color.RED,Color.RED));
 		r.addAttributes(new SelectionAttributes());
-		r.addAttributes(new RotationAttributes(20));
 		this.model.add(r);
-		
-		
-		
 		SCircle c = new SCircle(new Point(50,50),10);
 		c.addAttributes(new ColorAttributes(true,true,Color.GREEN,Color.GREEN));
 		c.addAttributes(new SelectionAttributes());
 		this.model.add(c);
 		c.addAttributes(new ColorAttributes(true,false,Color.RED,Color.BLACK));
 		
-		SText t= new SText(new Point(100,80),"Épihfqhfljqgfkqsgfhkqgfhkqgfkq");
+		SText t= new SText(new Point(100,80),"qpihfqhfljqgfkqsgfhkqgfhkqgfkq");
 		t.addAttributes(new ColorAttributes(true,false,Color.YELLOW,Color.BLUE));
 		t.addAttributes(new FontAttributes());
 		t.addAttributes(new SelectionAttributes());
+		t.addAttributes(new RotationAttributes(40));
 		this.model.add(t);
 		
 		SCollection sc = new SCollection();
@@ -79,8 +80,12 @@ public class Editor extends JFrame
 		c.addAttributes(new ColorAttributes(false,true,Color.BLUE,Color.DARK_GRAY));
 		c.addAttributes(new SelectionAttributes());
 		sc.add(c);
-		sc.addAttributes(new RotationAttributes(70));
 		this.model.add(sc);
+		
+		
+		SImage i = new SImage("C:\\Users\\schum\\Desktop\\Projets Java\\ShapesUpgraded\\src\\graphics\\tintin.jpg",new Point(500,500),127,150);
+		i.addAttributes(new SelectionAttributes());
+		this.model.add(i);
 	}
 	
 	public static void main(String[] args)

@@ -8,8 +8,8 @@ import java.awt.font.FontRenderContext;
 
 public class FontAttributes extends Attributes {
 
-	private Font font;
-	private Color font_color;
+	public Font font;
+	public Color font_color;
 	
 	public FontAttributes() {
 		this(new Font("Ariel", Font.PLAIN, 12), Color.BLACK);
@@ -24,14 +24,15 @@ public class FontAttributes extends Attributes {
 		return Attributes.FontID;
 	}
 	
-	public Font font() {
-		return this.font;
-	}
 	public Color fontColor() {
 		return this.font_color;
 	}
 	
 	public Rectangle getBounds(String s) {
 		return this.font.getStringBounds(s, new FontRenderContext(null,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT, RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT)).getBounds();
+	}
+	
+	public Attributes clone(){
+		return new FontAttributes(this.font,this.font_color);
 	}
 }

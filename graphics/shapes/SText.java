@@ -2,6 +2,7 @@ package graphics.shapes;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Map;
 
 import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.FontAttributes;
@@ -14,6 +15,13 @@ public class SText extends Shape {
 		this.setLoc(p);
 		this.setText(text);
 	}
+	
+	public SText(String t,Point p,Map<String,Attributes> map){
+		super(map);
+		this.text=t;
+		this.loc=(Point)p.clone();
+	}
+	
 	public String getText() {
 		return this.text;
 	}
@@ -38,25 +46,21 @@ public class SText extends Shape {
 	}
 
 	@Override
-	public Rectangle getBounds() {
+	public Rectangle getBound() {
 		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = new FontAttributes(); }
 		Rectangle r = fa.getBounds(this.text);
 		r.translate(this.loc.x, this.loc.y);
 		return r;
 	}
-	
-	@Override
-	public Point getCenter() {
-		Rectangle rect = this.getBounds();
-		Point p = this.getLoc();
-		p.translate(rect.width/2, rect.height/2);
-		return p;
-	}
 
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitText(this);
+	}
+	
+	public Shape clone(){
+		return new SText(this.text,this.loc,attributes);
 	}
 
 }

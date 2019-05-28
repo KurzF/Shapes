@@ -8,7 +8,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SRectangle extends Shape {
 	private Rectangle rect;
@@ -20,6 +21,11 @@ public class SRectangle extends Shape {
 	
 	public SRectangle(Point p,int width, int height) {
 		this(new Rectangle(p.x, p.y, width, height));
+	}
+	
+	public SRectangle(Rectangle r,Map<String,Attributes> map){
+		super(map);
+		this.rect=(Rectangle) r.clone();
 	}
 	
 	public Rectangle getRect() {
@@ -42,17 +48,15 @@ public class SRectangle extends Shape {
 	}
 
 	@Override
-	public Rectangle getBounds() {
+	public Rectangle getBound() {
 		return this.rect;
 	}
 	
-	@Override
-	public Point getCenter() {
-		Point p = this.getLoc();
-		p.translate(this.rect.width/2, this.rect.height/2);
-		return p;
-	}
 	public void accept(ShapeVisitor vs) {
 		vs.visitRectangle(this);
+	}
+	
+	public Shape clone(){
+		return new SRectangle(this.rect,attributes);
 	}
 }

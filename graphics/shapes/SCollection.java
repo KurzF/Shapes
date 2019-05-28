@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 public class SCollection extends Shape {
 
@@ -18,6 +19,19 @@ public class SCollection extends Shape {
 		super();
 		this.collection = new ArrayList<Shape>();
 	}
+	
+	
+	public SCollection(ArrayList<Shape> sp,Map<String,Attributes> map){
+		super(map);
+		ArrayList<Shape> save=new ArrayList<Shape>();
+		Iterator<Shape> i = sp.iterator();
+		while(i.hasNext()) {
+			Shape s = i.next();
+			save.add(s.clone());
+		}
+		this.collection=save;
+	}
+	
 	
 	public Iterator<Shape> iterator() {
 		return this.collection.iterator();
@@ -55,18 +69,18 @@ public class SCollection extends Shape {
 	}
 
 	@Override
-	public Rectangle getBounds() {
+	public Rectangle getBound() {
 		Iterator<Shape> i = this.iterator();
 		if(!i.hasNext()) {
 			return new Rectangle(0,0,0,0);
 		}
-		Rectangle r = i.next().getBounds();
+		Rectangle r = i.next().getBound();
 		Point bottom_right = r.getLocation();
 		Point top_left = r.getLocation();
 		bottom_right.translate(r.width, r.height);
 		while(i.hasNext()) {
 			Shape s=i.next();
-			r = s.getBounds();
+			r = s.getBound();
 			if(r.x < top_left.x) { top_left.x = r.x; }
 			if(r.y < top_left.y) { top_left.y = r.y; }
 			if(r.width + r.x > bottom_right.x) { bottom_right.x = r.width + r.x; }
@@ -74,17 +88,23 @@ public class SCollection extends Shape {
 		}
 		return new Rectangle(top_left.x, top_left.y,bottom_right.x-top_left.x,bottom_right.y-top_left.y);
 	}
-	
-	@Override
-	public Point getCenter() {
-		Rectangle rect = this.getBounds();
-		Point loc = rect.getLocation();
-		loc.translate(rect.width/2, rect.height/2);
-		return loc;
-	}
-	
+
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCollection(this);
+	}
+	
+	public String toString(){
+		String ret="";
+		Iterator<Shape> i = this.iterator();
+		while(i.hasNext()) {
+			Shape s=i.next();
+			ret+=s+"\n";
+		}
+		return ret;
+	}
+	
+	public Shape clone(){
+		return new SCollection(this.collection,attributes);
 	}
 }

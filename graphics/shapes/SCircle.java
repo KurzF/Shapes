@@ -1,7 +1,10 @@
 package graphics.shapes;
 
+import graphics.shapes.attributes.Attributes;
+
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Map;
 
 public class SCircle extends Shape {
 	
@@ -11,6 +14,12 @@ public class SCircle extends Shape {
 	public SCircle(Point p, int radius) {
 		this.setLoc(p);
 		this.setRadius(radius);
+	}
+	
+	public SCircle(int rad,Point p,Map<String,Attributes> map){
+		super(map);
+		this.radius=rad;
+		this.loc=(Point) p.clone();
 	}
 	
 	@Override
@@ -29,17 +38,10 @@ public class SCircle extends Shape {
 	}
 
 	@Override
-	public Rectangle getBounds() {
+	public Rectangle getBound() {
 		return new Rectangle(this.loc.x, this.loc.y, this.radius*2, this.radius*2);
 	}
-	
-	@Override
-	public Point getCenter() {
-		Point p = this.getLoc();
-		p.translate(this.radius, this.radius);
-		return p;
-	}
-	
+
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCircle(this);
@@ -51,5 +53,9 @@ public class SCircle extends Shape {
 	
 	public void setRadius(int r) {
 		this.radius = r;
+	}
+	
+	public Shape clone(){
+		return new SCircle(this.radius,this.loc,attributes);
 	}
 }
