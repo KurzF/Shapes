@@ -1,24 +1,35 @@
-package graphics.shapes.handlers;
+package graphics.shapes.handles;
 
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 
+import graphics.shapes.SRectangle;
 import graphics.shapes.Shape;
 import graphics.shapes.ShapeVisitor;
 import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.ui.ShapeController;
 
-public abstract class Handler extends Shape{
-	
+/**
+ * 
+ * @author kurzf
+ * Allow to modify master thanks to the callback modifier()
+ * 
+ */
+public abstract class Handle extends Shape{
+
+
 	protected Shape master;
 	protected Shape shape; //the handler shape
 	
-	public Handler(Shape master) {
+	public Handle(Shape master) {
+		super();
 		this.master = master;
+		this.shape = new SRectangle(new Point(0,0),10,10, false);
 	}
 	
-	public abstract void modifier(int dx, int dy);
+	public abstract void modifier(Point loc);
 	public abstract void position();
 	
 	public Point getLoc() {
@@ -49,14 +60,9 @@ public abstract class Handler extends Shape{
 		return this.master;
 	}
 	
+	public abstract int getId(); //use by ShapeController
+	
 	public void accept(ShapeVisitor sv) {
 		this.shape.accept(sv);
 	}
-
-	@Override
-	public void grow(int dx, int dy) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

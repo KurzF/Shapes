@@ -3,8 +3,12 @@ package graphics.shapes;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.ResizeAttributes;
 
+/**
+ * A drawable circle
+ */
 public class SCircle extends Shape {
 	
 	private int radius;
@@ -23,12 +27,16 @@ public class SCircle extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.loc = p;
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
+		if(ra != null) {
+			ra.refresh();
+		}
 	}
 
 	@Override
 	public void translate(int x, int y) {
 		this.loc.translate(x, y);
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
 		if(ra != null) {
 			ra.translate(x, y);
 		}
@@ -57,12 +65,25 @@ public class SCircle extends Shape {
 	
 	public void setRadius(int r) {
 		this.radius = r;
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
+		if(ra != null) {
+			ra.refresh();
+		}
 	}
 	
 	@Override
-	public void grow(int dx, int dy) {
-		this.radius += Math.abs(dx) < Math.abs(dy) ? dx : dy;
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
+	public void setWidth(int width) {
+		this.radius = width/2;
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
+		if(ra != null) {
+			ra.refresh();
+		}
+	}
+
+	@Override
+	public void setHeight(int height) {
+		this.radius = height/2;
+		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
 		if(ra != null) {
 			ra.refresh();
 		}

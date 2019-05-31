@@ -1,6 +1,7 @@
 package graphics.shapes;
 
 import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.ResizeAttributes;
 import graphics.shapes.attributes.RotationAttributes;
 
 import java.awt.Point;
@@ -9,14 +10,34 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
+/**
+ * A drawable collection of shapes
+ */
 public class SCollection extends Shape {
 
 	private ArrayList<Shape> collection;
 
-	public SCollection() {
+	public SCollection(SCollection sc, Map<String,Attributes> attributes) {
+		super(attributes);
+		this.collection = (ArrayList<Shape>)sc.collection.clone();
+	}
+	
+	public SCollection(SCollection sc) {
+		this(sc, new TreeMap<String, Attributes>());
+	}
+	
+
+	
+	public SCollection(boolean withHandles) {
 		super();
 		this.collection = new ArrayList<Shape>();
+	}
+	
+	public SCollection() {
+		this(true);
 	}
 	
 	public Iterator<Shape> iterator() {
@@ -52,6 +73,7 @@ public class SCollection extends Shape {
 		while(i.hasNext()) {
 			i.next().translate(x,y);
 		}
+		this.refresh();
 	}
 
 	@Override
@@ -83,14 +105,58 @@ public class SCollection extends Shape {
 		return loc;
 	}
 	
-	@Override
-	public void grow(int dx, int dy) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitCollection(this);
+	}
+
+	@Override
+	public void setWidth(int width) {
+		Rectangle rect = this.getBounds();
+		Iterator<Shape> i = this.iterator();
+		while(i.hasNext()) {
+			Shape elem = i.next();
+			Point elem_loc = elem.getLoc();
+			elem.setLoc(new Point((int)(rect.x+(elem_loc.x-rect.x)*(width/rect.width)), elem_loc.y));
+		}
+		this.refresh();
+		
+	}
+
+	@Override
+	public void setHeight(int height) {
+		Rectangle rect = this.getBounds();
+		Iterator<Shape> i = this.iterator();
+		while(i.hasNext()) {
+			Shape elem = i.next();
+			Point elem_loc = elem.getLoc();
+			elem.setLoc(new Point(elem_loc.x, (int)(rect.y+(elem_loc.y-rect.y)*(height/rect.height))) );
+		}
+		this.refresh();
+	}
+	
+	public void setCollection(int index, Shape elem) {
+		if(index>=0 && index < this.collection.size()) {
+			this.collection.set(index, elem);
+			System.out.println("setCol");
+		}
+		else {
+			System.out.println("setCollection error: " + index);
+		}
+	}
+
+	@Override
+	public Shape clone() {
+		return null;
+	}
+	
+	public String toString() {
+		Iterator<Shape> it = this.collection.iterator();
+		String ret = "";
+		while(it.hasNext()) {
+			ret += it.next() +"\n";
+		}
+		return ret;
 	}
 }

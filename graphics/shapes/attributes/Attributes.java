@@ -7,4 +7,5 @@ public  abstract class Attributes {
 	public static final String RotationID = "rotation";
 	public static final String ResizeID = "resize";
 	public abstract String getID();
+	public abstract Attributes clone();
 }

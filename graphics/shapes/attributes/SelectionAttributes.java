@@ -1,14 +1,22 @@
 package graphics.shapes.attributes;
 
+/**
+ * Allow to select the shape
+ * 
+ */
 public class SelectionAttributes extends Attributes {
 	private boolean selected;
 	
-	public SelectionAttributes() {
-		this(false);
+	/**
+	 * 
+	 * @param selected Is shape selected
+	 */
+	public SelectionAttributes(boolean selected) {
+		this.selected = selected;
 	}
 	
-	public SelectionAttributes(boolean b) {
-		this.selected = b;
+	public SelectionAttributes() {
+		this(false);
 	}
 
 	public String getID() {
@@ -29,6 +37,10 @@ public class SelectionAttributes extends Attributes {
 	
 	public void toggleSelection() {
 		this.selected = !this.selected;
+	}
+	
+	public Attributes clone(){
+		return new SelectionAttributes(this.selected);
 	}
 	
 }

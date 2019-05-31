@@ -6,6 +6,9 @@ import graphics.shapes.Shape;
 import graphics.ui.Controller;
 import graphics.ui.View;
 
+/**
+ * The view to draw shape
+ */
 public class ShapesView extends View {
 	
 	public ShapesView(Object model) {

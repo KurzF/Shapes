@@ -1,10 +1,15 @@
 package graphics.shapes;
 
 import java.awt.Point;
+
 import java.awt.Rectangle;
 
 import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.FontAttributes;
+
+/**
+ * A drawable text
+ */
 public class SText extends Shape {
 	
 	private String text;

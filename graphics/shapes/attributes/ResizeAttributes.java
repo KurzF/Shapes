@@ -4,55 +4,47 @@ import java.util.TreeMap;
 
 import graphics.shapes.SRectangle;
 import graphics.shapes.Shape;
-import graphics.shapes.handlers.Handler;
-import graphics.shapes.handlers.RHBottomLeft;
-import graphics.shapes.handlers.RHBottomRight;
-import graphics.shapes.handlers.RHTopLeft;
-import graphics.shapes.handlers.RHTopRight;
+import graphics.shapes.handles.Handle;
+import graphics.shapes.handles.RHBottomLeft;
+import graphics.shapes.handles.RHBottomRight;
+import graphics.shapes.handles.RHTopLeft;
+import graphics.shapes.handles.RHTopRight;
 
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Store Handler to resize the shape with the mouse
+ */
 public class ResizeAttributes extends Attributes {
-	public static final String ID = "resize";
-	public static int size = 5;
-	private ArrayList<Handler> handlers;
 	
-	public ResizeAttributes(Shape master) {
+	private boolean resizable;
+	/**
+	 * Create 4 Handlers (one for each bounds corner)
+	 * @param master The shape to resize
+	 */
+	public ResizeAttributes() {
 		super();
-		this.handlers = new ArrayList<Handler>();
-		this.add(new RHTopLeft(master));
-		this.add(new RHBottomRight(master));
-		this.add(new RHTopRight(master));
-		this.add(new RHBottomLeft(master));
+		this.resizable = true;
 	}
 	
-	public Iterator<Handler> iterator() {
-		return this.handlers.iterator();
+	public boolean getResizable() {
+		return this.resizable;
 	}
 	
-	public void add(Handler h) {
-		this.handlers.add(h);
-	}
-	
-	public void translate(int dx, int dy) {
-		for(Handler h : this.handlers) {
-			h.translate(dx, dy);
-		}
-	}
-		
-	public void refresh() {
-		Point loc = this.handlers.get(0).getMaster().getLoc();
-		for (Handler h: this.handlers) {
-			h.position();
-		}
+	public void setResizable(boolean resizable) {
+		this.resizable = resizable;
 	}
 	
 	@Override
 	public String getID() {
-		return ResizeAttributes.ID;
+		return Attributes.ResizeID;
+	}
+
+	public Attributes clone() {
+		return new ResizeAttributes();
 	}
 
 }

@@ -10,18 +10,42 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
+/**
+ * A drawable rectangle
+ */
 public class SRectangle extends Shape {
 	private Rectangle rect;
 	
-	public SRectangle(Rectangle rect) {
-		super();
-		this.rect = rect;
+	public SRectangle(Point p,int width, int height, Map<String,Attributes> attributes, boolean withHandles) {
+		super(attributes);
+		this.rect = new Rectangle(p.x, p.y, width, height);
+		if(withHandles) {
+			this.setResizeHandles();
+		}
+
+	}
+	
+	public SRectangle(Rectangle rect, Map<String,Attributes> attributes, boolean withHandles) {
+		super(attributes);
+		this.rect = (Rectangle)rect.clone();
+	}
+	
+	public SRectangle(Point p,int width, int height, boolean withHandles) {
+		this(p, width, height, new TreeMap<String, Attributes>(), withHandles);
 	}
 	
 	public SRectangle(Point p,int width, int height) {
-		this(new Rectangle(p.x, p.y, width, height));
+		this(p, width, height, new TreeMap<String, Attributes>(), true);
 	}
+	
+	public SRectangle(Rectangle rect, Map<String,Attributes> attributes) {
+		this(rect,attributes,true);
+	}
+
 	
 	public Rectangle getRect() {
 		return this.rect;
@@ -35,19 +59,13 @@ public class SRectangle extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.rect.setLocation(p);
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
-		if(ra != null) {
-			ra.refresh();
-		}
+		this.refresh();
 	}
 
 	@Override
 	public void translate(int x, int y) {
 		this.rect.translate(x, y);
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
-		if(ra != null) {
-			ra.refresh();
-		}
+		this.refresh();
 	}
 
 	@Override
@@ -62,16 +80,26 @@ public class SRectangle extends Shape {
 		return p;
 	}
 	
-	@Override
-	public void grow(int dx, int dy) {
-		this.getRect().width += dx;
-		this.getRect().height += dy;
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(ResizeAttributes.ID);
-		if(ra != null) {
-			ra.refresh();
-		}
-	}
 	public void accept(ShapeVisitor vs) {
 		vs.visitRectangle(this);
 	}
+
+	@Override
+	public void setWidth(int width) {
+		this.rect.width = width;
+		this.refresh();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		this.rect.height = height;
+		this.refresh();
+	}
+
+	@Override
+	public Shape clone() {
+		return new SRectangle(this.rect,this.attributes);
+	}
+
+
 }
