@@ -3,6 +3,8 @@ package graphics.shapes;
 import java.awt.Point;
 
 import java.awt.Rectangle;
+import java.util.Map;
+import java.util.TreeMap;
 
 import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.FontAttributes;
@@ -15,31 +17,50 @@ public class SText extends Shape {
 	private String text;
 	private Point loc;
 
-	public SText(Point p, String text) {
+	public SText(Point p, String text, Map<String, Attributes> attributes, boolean withHandles) {
+		super(attributes);
 		this.setLoc(p);
 		this.setText(text);
+		if(withHandles) {
+			this.setResizeHandles();
+		}
 	}
+	
+	public SText(Point p, String text, Map<String, Attributes> attributes) {
+		this(p,text, attributes, true);
+	}
+	
+	public SText(Point p, String text) {
+		this(p,text, new TreeMap<String, Attributes>(), true);
+	}
+	
 	public String getText() {
 		return this.text;
 	}
 	
 	public void setText(String text) {
 		this.text = text;
+		this.refresh();
 	}
 	
 	@Override
 	public Point getLoc() {
-		return new Point(this.loc);
+		Point location = (Point)this.loc.clone();
+		Rectangle r = this.getBounds();
+		location.translate(0, +r.height);
+		return location;
 	}
 
 	@Override
 	public void setLoc(Point p) {
 		this.loc = p;
+		this.refresh();
 	}
 
 	@Override
 	public void translate(int x, int y) {
 		this.loc.translate(x, y);
+		this.refresh();
 	}
 
 	@Override
@@ -47,7 +68,8 @@ public class SText extends Shape {
 		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = new FontAttributes(); }
 		Rectangle r = fa.getBounds(this.text);
-		r.translate(this.loc.x, this.loc.y);
+		r.setLocation(this.loc);
+		r.translate(0, +r.height);
 		return r;
 	}
 	
@@ -58,16 +80,35 @@ public class SText extends Shape {
 		p.translate(rect.width/2, rect.height/2);
 		return p;
 	}
-
-	@Override
-	public void grow(int dx, int dy) {
-		// TODO Auto-generated method stub
-		
+	
+	public int getHeight() {
+		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
+		if(fa == null) { fa = new FontAttributes(); }
+		Rectangle r = fa.getBounds(this.text);
+		return r.height;
 	}
-
+	
 	@Override
 	public void accept(ShapeVisitor sv) {
 		sv.visitText(this);
+	}
+	
+	@Override
+	public void setWidth(int width) {
+		// This will remain empty
+		
+	}
+	@Override
+	public void setHeight(int height) {
+		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
+		if(fa == null) { fa = new FontAttributes(); }
+		fa.setFontSize(height);
+		this.addAttributes(fa);
+		this.refresh();
+	}
+	@Override
+	public Shape clone() {
+		return new SText((Point)this.loc.clone(), this.text, this.attributes, this.getResizeHandles()!=null);
 	}
 
 }

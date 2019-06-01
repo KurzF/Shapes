@@ -9,4 +9,5 @@ public interface ShapeVisitor {
 	public abstract void visitCircle(SCircle c);
 	public abstract void visitText(SText t);
 	public abstract void visitPolygon(SPolygon p);
+	public abstract void visitImage(SImage i);
 }

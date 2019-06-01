@@ -35,16 +35,19 @@ public class RHBottomLeft extends Handle {
 		last_pos.translate(0, rect.height);
 		int dx = (int)(loc.getX())-last_pos.x;
 		int dy = (int)(loc.getY())-last_pos.y;
-
+		
+		double alpha;
 		if(rot != null)
 		{
-			double alpha = Math.toRadians(rot.getAngle());
-			this.master.translate((int)((dx*(Math.cos(alpha)+1)-dy*Math.sin(alpha))/2),
-								  (int)((dx*Math.sin(alpha)+dy*(Math.cos(alpha)-1))/2));
+			alpha = Math.toRadians(rot.getAngle());
+		} else {
+			alpha = 0;
 		}
+		this.master.translate((int)((dx*(Math.cos(alpha)+1)-dy*Math.sin(alpha))/2),
+							  (int)((dx*Math.sin(alpha)+dy*(Math.cos(alpha)-1))/2));
 		this.master.setWidth(rect.width - dx);
 		this.master.setHeight(rect.height + dy);	
-		
+		System.out.println(dx+":"+dy);
 		/*Point anchor = this.getMaster().getLoc();
 		anchor.translate(this.getMaster().getBounds().width, 0);
 		Rectangle rect = this.master.getBounds();

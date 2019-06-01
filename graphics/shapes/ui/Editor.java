@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 import graphics.shapes.SCircle;
 import graphics.shapes.SCollection;
+import graphics.shapes.SImage;
 import graphics.shapes.SPolygon;
 import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
@@ -61,30 +62,25 @@ public class Editor extends JFrame
 		r.addAttributes(new ColorAttributes(false,true,Color.RED,Color.RED));
 		r.addAttributes(new SelectionAttributes());
 		r.addAttributes(new ResizeAttributes());
-		r.addAttributes(new RotationAttributes(90));
+		r.addAttributes(new RotationAttributes(0));
 		this.model.add(r);
 		
 		r.setLoc(new Point(40,40));
 		
-		/*SCircle c = new SCircle(new Point(50,50),10);
+		SCircle c = new SCircle(new Point(50,50),10);
 		c.addAttributes(new ColorAttributes(true,true,Color.GREEN,Color.GREEN));
 		c.addAttributes(new SelectionAttributes());
-		c.addAttributes(new ResizeAttributes(c));
+		c.addAttributes(new ResizeAttributes());
+		c.addAttributes(new RotationAttributes());
 		this.model.add(c);
 		c.addAttributes(new ColorAttributes(true,false,Color.RED,Color.BLACK));
-		
-		Point center = r.getCenter();
-		center.translate(-2, -2);
-		c = new SCircle(r.getCenter(),4);
-		c.addAttributes(new ColorAttributes(true,true,Color.GREEN,Color.GREEN));
-		this.model.add(c);
 				
-		
-		SText t= new SText(new Point(100,80),"Épihfqhfljqgfkqsgfhkqgfhkqgfkq");
+		SText t= new SText(new Point(100,80),"ÉTypihfqhfljqgfkqsgfhkqgfhkqgfkq");
 		t.addAttributes(new ColorAttributes(true,false,Color.YELLOW,Color.BLUE));
 		t.addAttributes(new FontAttributes());
 		t.addAttributes(new SelectionAttributes());
 		t.addAttributes(new RotationAttributes());
+		t.addAttributes(new ResizeAttributes());
 		this.model.add(t);
 		
 		SCollection sc = new SCollection();
@@ -101,7 +97,7 @@ public class Editor extends JFrame
 		c.addAttributes(new ColorAttributes(false,true,Color.BLUE,Color.DARK_GRAY));
 		c.addAttributes(new SelectionAttributes());
 		sc.add(c);
-		sc.addAttributes(new ResizeAttributes(sc));
+		sc.addAttributes(new ResizeAttributes());
 		sc.addAttributes(new RotationAttributes(0));
 		this.model.add(sc);
 		
@@ -111,7 +107,13 @@ public class Editor extends JFrame
 		p.add(new Point(30,30));
 		p.addAttributes(new SelectionAttributes());
 		p.addAttributes(new RotationAttributes(0));
-		this.model.add(p);*/
+		p.addAttributes(new ResizeAttributes());
+		this.model.add(p);
+		
+	/*	SImage i = new SImage("rsc/img/java.jpg", new Point(0,0),200,200);
+		i.addAttributes(new SelectionAttributes());
+		i.addAttributes(new ResizeAttributes());
+		this.model.add(i);*/
 	}
 	
 	public static void main(String[] args)
@@ -121,6 +123,15 @@ public class Editor extends JFrame
 		self.setVisible(true);
 		self.sview.setFocusable(true);
 		self.sview.grabFocus();
+	/*	Iterator<Shape> it = self.model.iterator();
+		it.next();
+		it.next();
+		it.next();
+		it.next();
+		it.next();
+		it.next().getResizeHandles().getHandle(3).setLoc(new Point(300,300));*/
 		
 	}
 }
+
+//TODO bug: resize don't work if there is no rotation attribute

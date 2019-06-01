@@ -3,6 +3,7 @@ package graphics.shapes.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -11,6 +12,7 @@ import java.util.Iterator;
 
 import graphics.shapes.SCircle;
 import graphics.shapes.SCollection;
+import graphics.shapes.SImage;
 import graphics.shapes.SPolygon;
 import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
@@ -43,17 +45,12 @@ public class ShapeDraftman implements ShapeVisitor {
 	private void drawSelection(Shape s) {
 		SelectionAttributes sa = (SelectionAttributes) s.getAttributes(Attributes.SelectionID);
 		if(sa != null && sa.isSelected()) {
-			Rectangle r = s.getBounds();
-			this.g.setColor(Color.BLACK);
-			//this.g.drawRect(r.x-ShapeDraftman.handler_size, r.y-ShapeDraftman.handler_size, ShapeDraftman.handler_size, ShapeDraftman.handler_size );
-			//this.g.drawRect(r.x-ShapeDraftman.handler_size, r.y+r.height, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
-			//this.g.drawRect(r.x+r.width, r.y+r.height, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
-			//this.g.drawRect(r.x+r.width, r.y-ShapeDraftman.handler_size, ShapeDraftman.handler_size, ShapeDraftman.handler_size);
-			if(s.getAttributes(Attributes.ResizeID)!=null) {
+			if(s.getAttributes(Attributes.ResizeID)!=null && s.getResizeHandles()!=null) {
 				for(int i=0; i<ResizeHandles.LENGTH; i++) {
+					System.out.println(s.getResizeHandles().getHandle(i));
 					s.getResizeHandles().getHandle(i).getShape().accept(this);
 				}
-			};
+			}
 		}
 	}
 	
@@ -135,11 +132,6 @@ public class ShapeDraftman implements ShapeVisitor {
 		if(ca.filled()) { 
 			this.g.setColor(ca.filledColor());
 			this.g.fill(t.getBounds());
-			
-			//DEBUG
-			Rectangle r = t.getBounds();
-			this.g.setColor(Color.BLUE);
-			this.g.drawOval( (int)r.getCenterX()-2, (int)r.getCenterY()-2, 4, 4);
 		}
 		if(ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
@@ -148,7 +140,7 @@ public class ShapeDraftman implements ShapeVisitor {
 
 		this.g.setColor(fa.fontColor());
 		this.g.setFont(fa.font());
-		this.g.drawString(t.getText(), t.getLoc().x, t.getLoc().y);
+		this.g.drawString(t.getText(), t.getLoc().x, t.getLoc().y+fa.getBounds(t.getText()).height - fa.getDescent(t.getText()));
 		this.drawSelection(t);
 		this.g.setTransform(at);
 	}
@@ -173,7 +165,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		
 		if (ca.stroked()) {
 			this.g.setColor(ca.strokedColor());
-			this.g.drawPolygon(pl.getPolygon());		
+			this.g.drawPolygon(pl.getPolygon());	
 		}
 		this.drawSelection(pl);
 
@@ -181,4 +173,21 @@ public class ShapeDraftman implements ShapeVisitor {
 			g.rotate(Math.toRadians(-rot.getAngle()),center.x,center.y);
 		}
 	}
+	
+	public void visitImage(SImage img) {
+		Point location=img.getLoc();
+		ColorAttributes ca = (ColorAttributes) img.getAttributes(Attributes.ColorID);
+		RotationAttributes rotat = (RotationAttributes) img.getAttributes(Attributes.RotationID);
+		if(ca == null) { 
+			ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; 
+		}
+		if (rotat == null) {
+			rotat= new RotationAttributes();
+		}
+		this.g.rotate(Math.toRadians(rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
+		Image i=img.getImage();
+		this.g.drawImage(i,img.getLoc().x,img.getLoc().y,null);
+		drawSelection(img);
+		this.g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
+}
 }

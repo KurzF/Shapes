@@ -41,6 +41,9 @@ public class FontAttributes extends Attributes {
 		return this.font_color;
 	}
 	
+	public void setFontSize(int size) {
+		this.font= this.font.deriveFont(size*0.8F);
+	}
 	/**
 	 * 
 	 * @param s The string to bound
@@ -48,6 +51,13 @@ public class FontAttributes extends Attributes {
 	 */
 	public Rectangle getBounds(String s) {
 		return this.font.getStringBounds(s, new FontRenderContext(null,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT, RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT)).getBounds();
+	}
+	
+	public int getHeight(String s) {
+		return (int)this.font.getLineMetrics(s, new FontRenderContext(null,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT, RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT)).getHeight();
+	}
+	public int getDescent(String s) {
+		return (int)this.font.getLineMetrics(s, new FontRenderContext(null,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT, RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT)).getDescent();
 	}
 	
 	public Attributes clone(){

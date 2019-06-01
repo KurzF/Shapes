@@ -6,20 +6,38 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import graphics.shapes.attributes.Attributes;
 
 public class SPolygon extends Shape{
 	private Polygon pl;
 	
+	public SPolygon(Polygon pl, Map<String,Attributes> attributes, boolean withHandles) {
+		super(attributes);
+		
+		this.pl = new Polygon();
+		for(int i=0; i<pl.npoints; i++) {
+			this.pl.addPoint(pl.xpoints[i], pl.ypoints[i]);
+		}
+		if(withHandles) {
+			this.setResizeHandles();
+		}
+	}
+	
 	public SPolygon() {	
 		this.pl = new Polygon();
+		this.setResizeHandles();
 	}
 	
 	public SPolygon(Polygon pl) {
-		this.pl = pl;	
+		this(pl, new TreeMap<String,Attributes>(), true);
 	}
 	
 	public void add(Point p) {
 		this.pl.addPoint(p.x, p.y);
+		this.refresh();
 	}
 		
 	public Polygon getPolygon() {
@@ -38,6 +56,7 @@ public class SPolygon extends Shape{
 	
 	public void translate(int dx,int dy) {
 		this.pl.translate(dx, dy);
+		this.refresh();
 	}
 		
 	public Rectangle getBounds() {
@@ -53,12 +72,30 @@ public class SPolygon extends Shape{
 		Rectangle rect = this.getBounds();
 		Point loc = rect.getLocation();
 		loc.translate(rect.width/2, rect.height/2);
-		return null;
+		return loc;
 	}
+
 	@Override
-	public void grow(int dx, int dy) {
-		// TODO Auto-generated method stub
-		
+	public void setWidth(int width) {
+		Rectangle rect = this.getBounds();
+		for(int i=0; i<this.pl.npoints; i++) {
+			this.pl.xpoints[i] =  (int) ((int) rect.x+(this.pl.xpoints[i]-rect.x)/((double)rect.width)*width);
+		}
+		this.refresh();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		Rectangle rect = this.getBounds();
+		for(int i=0; i<this.pl.npoints; i++) {
+			this.pl.xpoints[i] =  (int) ((int) rect.y+(this.pl.ypoints[i]-rect.y)*1.0/rect.height*height);
+		}
+		this.refresh();
+	}
+
+	@Override
+	public Shape clone() {
+		return new SPolygon(this.pl, this.attributes, this.getResizeHandles()!=null);
 	}
 
 }

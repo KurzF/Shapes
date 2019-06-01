@@ -37,15 +37,20 @@ public class RHBottomRight extends Handle {
 		last_pos.translate(rect.width, rect.height);
 		int dx = (int)(loc.getX())-last_pos.x;
 		int dy = (int)(loc.getY())-last_pos.y;
-
+		
+		double alpha;
 		if(rot != null)
 		{
-			double alpha = Math.toRadians(rot.getAngle());
-			this.master.translate((int)((dx*(Math.cos(alpha)-1)-dy*Math.sin(alpha))/2),
-								  (int)((dx*Math.sin(alpha)+dy*(Math.cos(alpha)-1))/2));
+			alpha = Math.toRadians(rot.getAngle());
+		} else {
+			alpha = 0;
 		}
+		this.master.translate((int)((dx*(Math.cos(alpha)-1)-dy*Math.sin(alpha))/2),
+							  (int)((dx*Math.sin(alpha)+dy*(Math.cos(alpha)-1))/2));
+		
 		this.master.setWidth((int)(loc.getX())-rect.x);
-		this.master.setHeight((int)(loc.getY())-rect.y);	
+		this.master.setHeight((int)(loc.getY())-rect.y);
+		System.out.println("modifier ");
 	}
 	
 	@Override
@@ -56,6 +61,7 @@ public class RHBottomRight extends Handle {
 	}
 	
 	public void setLoc(Point p) {
+		System.out.println("modifier call1");
 		Point2D loc = (Point2D) p.clone();
 		RotationAttributes rot = (RotationAttributes)this.master.getAttributes(Attributes.RotationID);
 		if(rot != null && rot.getAngle() != 0) {
@@ -65,6 +71,7 @@ public class RHBottomRight extends Handle {
 			loc = at.transform(loc, null);
 		}
 		this.modifier(new Point((int)loc.getX(), (int)loc.getY()));
+		System.out.println("modifier call");
 	}
 
 

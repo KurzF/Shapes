@@ -117,7 +117,7 @@ public class ShapeController extends Controller{
 				}*/
 				ResizeAttributes ra = (ResizeAttributes)this.copy.getAttributes(Attributes.ResizeID);
 				if(ra != null && ra.getResizable()) {
-					RotationAttributes rot = (RotationAttributes)((Handle)this.target).getMaster().getAttributes(Attributes.RotationID);
+					/*RotationAttributes rot = (RotationAttributes)((Handle)this.target).getMaster().getAttributes(Attributes.RotationID);
 					if(rot != null) {
 						Point center = ((Handle)this.target).getMaster().getCenter();
 						Point2D press_rotate = this.press_position;
@@ -125,7 +125,9 @@ public class ShapeController extends Controller{
 						at.rotate(Math.toRadians(-rot.getAngle()), center.x, center.y);
 						at.transform(press_rotate, press_rotate);
 						((Handle)this.target).modifier(new Point((int)press_rotate.getX(), (int)press_rotate.getY()));
-					}
+					}*/
+					((SCollection)this.getModel()).setCollection(this.index, this.copy.clone());
+					((SCollection)this.getModel()).getShape(this.index).getResizeHandles().getHandle(((Handle)this.target).getId()).setLoc(this.press_position);;
 				}
 				
 			}
@@ -203,10 +205,11 @@ public class ShapeController extends Controller{
 	}
 	
 	private void setTarget(Point p) {
+		this.target = null;
+		this.copy = null;
+		this.index = -1;
 		if(this.getModel() == null) {
-			this.target = null;
-			this.copy = null;
-			this.index = -1;
+
 			return;
 		}
 		Iterator<Shape> i = ((SCollection)this.getModel()).iterator();
@@ -220,7 +223,7 @@ public class ShapeController extends Controller{
 			}
 			if(rot.getAngle()==0){
 				ResizeAttributes ra = ((ResizeAttributes)s.getAttributes(Attributes.ResizeID));
-				if(ra != null && ra.getResizable()) {
+				if(ra != null && ra.getResizable() && s.getResizeHandles() != null) {
 					for(int k=0; k<ResizeHandles.LENGTH; k++) {
 						Shape hand = s.getResizeHandles().getHandle(k);
 						if(hand.getBounds().contains(p)) {
@@ -243,7 +246,7 @@ public class ShapeController extends Controller{
 				Point center = s.getCenter();
 				tx.rotate(Math.toRadians(-rot.getAngle()),center.x, center.y);
 				ResizeAttributes ra = ((ResizeAttributes)s.getAttributes(Attributes.ResizeID));
-				if(ra != null && ra.getResizable()) {
+				if(ra != null && ra.getResizable() && s.getResizeHandles()!=null) {
 					for(int k=0; k<ResizeHandles.LENGTH; k++) {
 						Shape hand = s.getResizeHandles().getHandle(k);
 						if(hand.getBounds().contains(tx.transform(p,null))) {
@@ -293,5 +296,6 @@ public class ShapeController extends Controller{
 			((SCollection)this.getModel()).add(s);
 		}
 		this.clipboard=new SCollection();
+		this.getView().repaint();
 	}
 }

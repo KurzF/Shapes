@@ -20,20 +20,29 @@ public class SCollection extends Shape {
 
 	private ArrayList<Shape> collection;
 
-	public SCollection(SCollection sc, Map<String,Attributes> attributes) {
-		super(attributes);
-		this.collection = (ArrayList<Shape>)sc.collection.clone();
-	}
-	
-	public SCollection(SCollection sc) {
-		this(sc, new TreeMap<String, Attributes>());
-	}
-	
 
+	
+	public SCollection(ArrayList<Shape> collection, Map<String, Attributes> attributes, boolean withHandles) {
+		super(attributes);
+		ArrayList<Shape> save=new ArrayList<Shape>();
+		Iterator<Shape> i = collection.iterator();
+		while(i.hasNext()) {
+			Shape s = i.next();
+			save.add(s.clone());
+		}
+		this.collection=save;
+		if(withHandles) {
+			this.setResizeHandles();
+		}
+	}
 	
 	public SCollection(boolean withHandles) {
 		super();
 		this.collection = new ArrayList<Shape>();
+		if(withHandles) {
+			this.setResizeHandles();
+		}
+		
 	}
 	
 	public SCollection() {
@@ -46,6 +55,7 @@ public class SCollection extends Shape {
 	
 	public void add(Shape s) {
 		this.collection.add(s);
+		this.refresh();
 	}
 	
 	@Override
@@ -65,6 +75,7 @@ public class SCollection extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.translate(p.x - this.getLoc().x, p.y - this.getLoc().y);
+		this.refresh();
 	}
 
 	@Override
@@ -118,7 +129,7 @@ public class SCollection extends Shape {
 		while(i.hasNext()) {
 			Shape elem = i.next();
 			Point elem_loc = elem.getLoc();
-			elem.setLoc(new Point((int)(rect.x+(elem_loc.x-rect.x)*(width/rect.width)), elem_loc.y));
+			elem.setLoc(new Point((int)(rect.x+(elem_loc.x-rect.x)*(width*1.0/rect.width)), elem_loc.y));
 		}
 		this.refresh();
 		
@@ -131,7 +142,7 @@ public class SCollection extends Shape {
 		while(i.hasNext()) {
 			Shape elem = i.next();
 			Point elem_loc = elem.getLoc();
-			elem.setLoc(new Point(elem_loc.x, (int)(rect.y+(elem_loc.y-rect.y)*(height/rect.height))) );
+			elem.setLoc(new Point(elem_loc.x, (int)(rect.y+(elem_loc.y-rect.y)*(height*1.0/rect.height))) );
 		}
 		this.refresh();
 	}
@@ -145,10 +156,14 @@ public class SCollection extends Shape {
 			System.out.println("setCollection error: " + index);
 		}
 	}
+	
+	public Shape getShape(int index) {
+		return this.collection.get(index);
+	}
 
 	@Override
 	public Shape clone() {
-		return null;
+		return new SCollection(this.collection,this.attributes, this.getResizeHandles()!=null);
 	}
 	
 	public String toString() {

@@ -2,6 +2,8 @@ package graphics.shapes;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Map;
+import java.util.TreeMap;
 
 import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.ResizeAttributes;
@@ -14,9 +16,17 @@ public class SCircle extends Shape {
 	private int radius;
 	private Point loc; // top left corner of bound
 	
-	public SCircle(Point p, int radius) {
+	public SCircle(Point p, int radius, Map<String, Attributes> attributes, boolean withHandle) {
+		super(attributes);
 		this.setLoc(p);
 		this.setRadius(radius);
+		if(withHandle) {
+			this.setResizeHandles();
+		}
+	}
+	
+	public SCircle(Point p, int radius) {
+		this(p, radius, new TreeMap<String, Attributes>(), true);
 	}
 	
 	@Override
@@ -27,19 +37,13 @@ public class SCircle extends Shape {
 	@Override
 	public void setLoc(Point p) {
 		this.loc = p;
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
-		if(ra != null) {
-			ra.refresh();
-		}
+		this.refresh();
 	}
 
 	@Override
 	public void translate(int x, int y) {
 		this.loc.translate(x, y);
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
-		if(ra != null) {
-			ra.translate(x, y);
-		}
+		this.refresh();
 	}
 
 	@Override
@@ -65,27 +69,24 @@ public class SCircle extends Shape {
 	
 	public void setRadius(int r) {
 		this.radius = r;
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
-		if(ra != null) {
-			ra.refresh();
-		}
+		this.refresh();
 	}
 	
 	@Override
 	public void setWidth(int width) {
+		System.out.println("circle");
 		this.radius = width/2;
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
-		if(ra != null) {
-			ra.refresh();
-		}
+		this.refresh();
 	}
 
 	@Override
 	public void setHeight(int height) {
 		this.radius = height/2;
-		ResizeAttributes ra = (ResizeAttributes)this.getAttributes(Attributes.ResizeID);
-		if(ra != null) {
-			ra.refresh();
-		}
+		this.refresh();
+	}
+
+	@Override
+	public Shape clone() {
+		return new SCircle((Point)loc.clone(), this.radius, this.attributes, this.getResizeHandles()!=null);
 	}
 }

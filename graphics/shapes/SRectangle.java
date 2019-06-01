@@ -32,6 +32,9 @@ public class SRectangle extends Shape {
 	public SRectangle(Rectangle rect, Map<String,Attributes> attributes, boolean withHandles) {
 		super(attributes);
 		this.rect = (Rectangle)rect.clone();
+		if(withHandles) {
+			this.setResizeHandles();
+		}
 	}
 	
 	public SRectangle(Point p,int width, int height, boolean withHandles) {
@@ -98,7 +101,7 @@ public class SRectangle extends Shape {
 
 	@Override
 	public Shape clone() {
-		return new SRectangle(this.rect,this.attributes);
+		return new SRectangle(this.rect,this.attributes, this.getResizeHandles()!=null);
 	}
 
 
