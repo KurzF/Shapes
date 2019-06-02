@@ -63,7 +63,7 @@ public class RHTopLeft extends Handle {
 		RotationAttributes rot = (RotationAttributes)this.master.getAttributes(Attributes.RotationID);
 		if(rot != null && rot.getAngle() != 0) {
 			AffineTransform at = new AffineTransform();
-			Point center = this.master.getLoc();
+			Point center = this.master.getCenter();
 			at.rotate(Math.toRadians(-rot.getAngle()), center.x, center.y);
 			at.transform(loc, loc);
 		}

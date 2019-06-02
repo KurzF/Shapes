@@ -71,6 +71,12 @@ public abstract class Shape {
 	public abstract Point getCenter();
 	public abstract void setWidth(int width);
 	public abstract void setHeight(int height);
+	public int getWidth() {
+		return this.getBounds().width;
+	}
+	public int getHeight() {
+		return this.getBounds().height;
+	}
 	public abstract void accept(ShapeVisitor sv);
 	
 	public abstract Shape clone();

@@ -21,6 +21,7 @@ public class SImage extends Shape{
 	        Toolkit kit = Toolkit.getDefaultToolkit();
 	        this.image = kit.getImage(this.imageURL);
 	    }
+	    this.setResizeHandles();
 	}
 	
 	public SImage(String url,Point p) {
@@ -30,6 +31,7 @@ public class SImage extends Shape{
 	        Toolkit kit = Toolkit.getDefaultToolkit();
 	        this.image = kit.getImage(this.imageURL);
 	    }
+	    this.setResizeHandles();
 	}
 	
 	public SImage(String url,Point p,int width, int height, boolean withHandles) {
@@ -87,13 +89,10 @@ public class SImage extends Shape{
 
 	@Override
 	public Rectangle getBounds() {
-		int width;
-		int height;
+
 		Rectangle rect=new Rectangle();
-		width=this.image.getWidth(null);
-		height=this.image.getHeight(null);
-		rect.width=width;
-		rect.height=height;
+		rect.width=this.image.getWidth(null);
+		rect.height=this.image.getHeight(null);
 		rect.x=this.loc.x;
 		rect.y=this.loc.y;
 		return rect;
@@ -116,13 +115,14 @@ public class SImage extends Shape{
 
 	@Override
 	public void setWidth(int width) {
-		this.image=this.image.getScaledInstance(width, this.image.getHeight(null), Image.SCALE_SMOOTH);
-		this.refresh();
+		//this.image=this.image.getScaledInstance(width, this.image.getHeight(null), Image.SCALE_SMOOTH);
+		//this.refresh();
+		
 	}
 
 	@Override
 	public void setHeight(int height) {
-		this.image=this.image.getScaledInstance(this.image.getWidth(null), height, Image.SCALE_SMOOTH);
-		this.refresh();
+		//this.image=this.image.getScaledInstance(this.image.getWidth(null), height, Image.SCALE_SMOOTH);
+		//this.refresh();
 	}
 }

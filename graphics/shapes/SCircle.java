@@ -89,4 +89,16 @@ public class SCircle extends Shape {
 	public Shape clone() {
 		return new SCircle((Point)loc.clone(), this.radius, this.attributes, this.getResizeHandles()!=null);
 	}
+
+	@Override
+	public int getWidth() {
+		return this.radius*2;
+		
+	}
+
+	@Override
+	public int getHeight() {
+		return this.radius*2;
+		
+	}
 }

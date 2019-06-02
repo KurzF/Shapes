@@ -47,7 +47,6 @@ public class ShapeDraftman implements ShapeVisitor {
 		if(sa != null && sa.isSelected()) {
 			if(s.getAttributes(Attributes.ResizeID)!=null && s.getResizeHandles()!=null) {
 				for(int i=0; i<ResizeHandles.LENGTH; i++) {
-					System.out.println(s.getResizeHandles().getHandle(i));
 					s.getResizeHandles().getHandle(i).getShape().accept(this);
 				}
 			}
@@ -187,7 +186,8 @@ public class ShapeDraftman implements ShapeVisitor {
 		this.g.rotate(Math.toRadians(rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
 		Image i=img.getImage();
 		this.g.drawImage(i,img.getLoc().x,img.getLoc().y,null);
+		this.g.draw(img.getBounds());
 		drawSelection(img);
 		this.g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
-}
+	}
 }

@@ -102,7 +102,9 @@ public class SText extends Shape {
 	public void setHeight(int height) {
 		FontAttributes fa = (FontAttributes)this.getAttributes(Attributes.FontID);
 		if(fa == null) { fa = new FontAttributes(); }
+		int last_height = this.getHeight();
 		fa.setFontSize(height);
+		this.translate(0, last_height-this.getHeight()); //Eliminate translation of the text cause by the return value of this.getLoc();
 		this.addAttributes(fa);
 		this.refresh();
 	}

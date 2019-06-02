@@ -78,18 +78,22 @@ public class SPolygon extends Shape{
 	@Override
 	public void setWidth(int width) {
 		Rectangle rect = this.getBounds();
+		Polygon poly = new Polygon();
 		for(int i=0; i<this.pl.npoints; i++) {
-			this.pl.xpoints[i] =  (int) ((int) rect.x+(this.pl.xpoints[i]-rect.x)/((double)rect.width)*width);
+			poly.addPoint((int) ((int) rect.x+(this.pl.xpoints[i]-rect.x)/((double)rect.width)*width), this.pl.ypoints[i]);
 		}
+		this.pl = poly;
 		this.refresh();
 	}
 
 	@Override
 	public void setHeight(int height) {
 		Rectangle rect = this.getBounds();
+		Polygon poly = new Polygon();
 		for(int i=0; i<this.pl.npoints; i++) {
-			this.pl.xpoints[i] =  (int) ((int) rect.y+(this.pl.ypoints[i]-rect.y)*1.0/rect.height*height);
+			poly.addPoint(this.pl.xpoints[i], (int) ((int) rect.y+(this.pl.ypoints[i]-rect.y)*1.0/rect.height*height));
 		}
+		this.pl = poly;
 		this.refresh();
 	}
 

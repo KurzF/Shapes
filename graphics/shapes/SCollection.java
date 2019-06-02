@@ -130,6 +130,7 @@ public class SCollection extends Shape {
 			Shape elem = i.next();
 			Point elem_loc = elem.getLoc();
 			elem.setLoc(new Point((int)(rect.x+(elem_loc.x-rect.x)*(width*1.0/rect.width)), elem_loc.y));
+			elem.setWidth((int) (elem.getWidth()*(float)width/rect.width));
 		}
 		this.refresh();
 		
@@ -142,7 +143,8 @@ public class SCollection extends Shape {
 		while(i.hasNext()) {
 			Shape elem = i.next();
 			Point elem_loc = elem.getLoc();
-			elem.setLoc(new Point(elem_loc.x, (int)(rect.y+(elem_loc.y-rect.y)*(height*1.0/rect.height))) );
+			elem.setLoc(new Point(elem_loc.x, (int)(rect.y+(elem_loc.y-rect.y)*((float)height/rect.height))) );
+			elem.setHeight((int) (elem.getHeight()*(float)height/rect.height));
 		}
 		this.refresh();
 	}

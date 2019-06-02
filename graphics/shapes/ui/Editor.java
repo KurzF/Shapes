@@ -102,18 +102,27 @@ public class Editor extends JFrame
 		this.model.add(sc);
 		
 		SPolygon p = new SPolygon();
-		p.add(new Point(15,15));
-		p.add(new Point(15,30));
-		p.add(new Point(30,30));
+		p.add(new Point(100,100));
+		p.add(new Point(110,100));
+		p.add(new Point(115,90));
+		p.add(new Point(120,100));
+		p.add(new Point(130,100));
+		p.add(new Point(107,107));
+		p.add(new Point(102,114));
+		p.add(new Point(115,110));
+		p.add(new Point(128,114));
+		p.add(new Point(123,107));
 		p.addAttributes(new SelectionAttributes());
 		p.addAttributes(new RotationAttributes(0));
 		p.addAttributes(new ResizeAttributes());
 		this.model.add(p);
 		
-	/*	SImage i = new SImage("rsc/img/java.jpg", new Point(0,0),200,200);
+		SImage i = new SImage("rsc/img/java.jpg", new Point(0,0));
 		i.addAttributes(new SelectionAttributes());
 		i.addAttributes(new ResizeAttributes());
-		this.model.add(i);*/
+		i.addAttributes(new ColorAttributes(true,true,Color.MAGENTA,Color.BLUE));
+		i.addAttributes(new RotationAttributes());
+		this.model.add(i);
 	}
 	
 	public static void main(String[] args)
@@ -134,4 +143,3 @@ public class Editor extends JFrame
 	}
 }
 
-//TODO bug: resize don't work if there is no rotation attribute
