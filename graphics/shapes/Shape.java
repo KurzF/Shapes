@@ -1,5 +1,6 @@
 package graphics.shapes;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -12,6 +13,8 @@ import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.SelectionAttributes;
 import graphics.shapes.handles.Handle;
 import graphics.shapes.handles.ResizeHandles;
+
+import graphics.shapes.attributes.ColorAttributes;
 
 /**
  * A drawable shape
@@ -80,6 +83,14 @@ public abstract class Shape {
 	public abstract void accept(ShapeVisitor sv);
 	
 	public abstract Shape clone();
+	
+	public void setColor(Color color) {
+		ColorAttributes ca = ((ColorAttributes) this.getAttributes(Attributes.ColorID));
+		if(ca != null) {
+			ca.setFilledColor(color);
+		}
+	}
+	
 	public boolean isSelected() {// Shouldn't be here
 		SelectionAttributes sa = (SelectionAttributes)this.getAttributes(Attributes.SelectionID);
 		if(sa != null) {
@@ -87,5 +98,7 @@ public abstract class Shape {
 		}
 		return false;
 	}
+	
+	
 	
 }

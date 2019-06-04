@@ -52,7 +52,14 @@ public class ColorAttributes extends Attributes {
 		return stroke_color;
 	}
 
+	public void setFilledColor(Color c) {
+		this.fill_color = c;
+	}
 
+	public void setStrokedColor(Color c) {
+		this.stroke_color = c;
+	}
+	
 	@Override
 	public Attributes clone(){
 		return new ColorAttributes(this.fill,this.stroke,this.fill_color,this.stroke_color);

@@ -4,6 +4,7 @@ import graphics.shapes.attributes.Attributes;
 import graphics.shapes.attributes.ResizeAttributes;
 import graphics.shapes.attributes.RotationAttributes;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -168,6 +169,13 @@ public class SCollection extends Shape {
 		return new SCollection(this.collection,this.attributes, this.getResizeHandles()!=null);
 	}
 	
+	@Override
+	public void setColor(Color color) {
+		Iterator<Shape> it = this.collection.iterator();
+		while(it.hasNext()) {
+			it.next().setColor(color);
+		}
+	}
 	public String toString() {
 		Iterator<Shape> it = this.collection.iterator();
 		String ret = "";

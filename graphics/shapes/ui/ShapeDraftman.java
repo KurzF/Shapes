@@ -13,6 +13,7 @@ import java.util.Iterator;
 import graphics.shapes.SCircle;
 import graphics.shapes.SCollection;
 import graphics.shapes.SImage;
+import graphics.shapes.SPalette;
 import graphics.shapes.SPolygon;
 import graphics.shapes.SRectangle;
 import graphics.shapes.SText;
@@ -207,4 +208,25 @@ public class ShapeDraftman implements ShapeVisitor {
 		drawSelection(img);
 		this.g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
 }
+
+	@Override
+	public void visitPalette(SPalette p) {
+		Rectangle rect = p.getRect();
+		ColorAttributes colorAttributes = (ColorAttributes) p.getAttributes(Attributes.ColorID);
+		
+		if (colorAttributes == null) {
+			colorAttributes = DEFAULTCOLORATTRIBUTES;
+			System.out.println("default attributes");
+		}
+		
+		if (colorAttributes.filled()) {
+			g.setColor(colorAttributes.filledColor());
+			g.fillRect(rect.x, rect.y, rect.width, rect.height);
+		}
+		
+		if (colorAttributes.stroked()) {
+			g.setColor(colorAttributes.strokedColor());
+			g.drawRect(rect.x, rect.y, rect.width, rect.height);
+		}
+	}
 }

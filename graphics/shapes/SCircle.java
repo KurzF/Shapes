@@ -74,7 +74,6 @@ public class SCircle extends Shape {
 	
 	@Override
 	public void setWidth(int width) {
-		System.out.println("circle");
 		this.radius = width/2;
 		this.refresh();
 	}
@@ -83,6 +82,7 @@ public class SCircle extends Shape {
 	public void setHeight(int height) {
 		this.radius = height/2;
 		this.refresh();
+
 	}
 
 	@Override

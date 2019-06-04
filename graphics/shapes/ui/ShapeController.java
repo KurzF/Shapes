@@ -1,5 +1,6 @@
 package graphics.shapes.ui;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -7,11 +8,16 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+
 import graphics.ui.Controller;
 import graphics.ui.View;
 import graphics.shapes.Shape;
 import graphics.shapes.SCollection;
+import graphics.shapes.SPalette;
 import graphics.shapes.attributes.Attributes;
+import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.ResizeAttributes;
 import graphics.shapes.attributes.RotationAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
@@ -29,8 +35,17 @@ public class ShapeController extends Controller{
 	private Shape target;
 	private int index; //target (master in case of handler) index in SCollection
 	
+	private ShapesPainter painter;
+	private SPalette showPalette;
+	private SPalette sliderPalette;
+	
 	private SCollection clipboard;
 	private Shape copy; //All GUI control must copy the modified shape in this;
+	
+	/* Sliders */
+	private JSlider sliderR;
+	private JSlider sliderG;
+	private JSlider sliderB;
 	
 	public ShapeController(Object model, View view) {
 		super(model);
@@ -39,17 +54,58 @@ public class ShapeController extends Controller{
 		this.clipboard = new SCollection();
 	}
 	
+	public void setPainter(ShapesPainter painter) {
+		this.painter = painter;
+	}
+	
+	public void setPalette() {
+		
+		this.sliderPalette = new SPalette(new Point(50,220),30,30);
+		sliderPalette.addAttributes(new ColorAttributes(true,true,Color.BLACK,Color.BLACK));
+		((SCollection) this.getModel()).add(sliderPalette);
+		
+		//show palette, used to display the current color
+		this.showPalette = new SPalette(new Point(90,220),30,30);
+		showPalette.addAttributes(new ColorAttributes(true,true,Color.BLACK,Color.BLACK));
+		((SCollection) this.getModel()).add(showPalette);
+				
+		//instantiate sliders
+		sliderR = new JSlider(0, 255, 0);
+		sliderG = new JSlider(0, 255, 0);
+		sliderB = new JSlider(0, 255, 0);
+		
+		
+		
+		sliderR.addChangeListener(new SliderListener(this));
+		sliderG.addChangeListener(new SliderListener(this));
+		sliderB.addChangeListener(new SliderListener(this));
+		
+		this.sliderR.setFocusable(false);
+		this.sliderG.setFocusable(false);
+		this.sliderB.setFocusable(false);
+				
+		((ShapesView) this.getView()).setSlider(sliderR);
+		((ShapesView) this.getView()).setSlider(sliderG);
+		((ShapesView) this.getView()).setSlider(sliderB);
+	}
+	
 	public void mousePressed(MouseEvent e) {
 		System.out.println("press"+this.state);
+
+		
 		this.press_position = e.getPoint();
-		if(this.state == 1) {
+		if(SwingUtilities.isLeftMouseButton(e)) {
+			if(this.state == 1) {
+				this.setTarget(this.press_position);
+				if(this.target == null || (!this.target.isSelected() && !(this.target instanceof Handle))) {
+					this.state = 3;
+				}
+				else {
+					this.state =1;
+				}
+			}
+		} else {
 			this.setTarget(this.press_position);
-			if(this.target == null || (!this.target.isSelected() && !(this.target instanceof Handle))) {
-				this.state = 3;
-			}
-			else {
-				this.state =1;
-			}
 		}
 	}
 	
@@ -62,29 +118,40 @@ public class ShapeController extends Controller{
 	
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("press" + this.state);
-		if(this.state == 1) {
-			if(!e.isShiftDown()) {
-				this.unselectAll();
-			}
-			this.setTarget(e.getPoint());
-			if(this.target != null) {
-				SelectionAttributes sa;
-				if(this.target instanceof Handle) {
-					Handle h = (Handle) this.target;
-					sa = (SelectionAttributes)h.getMaster().getAttributes(Attributes.SelectionID);
+		if(SwingUtilities.isLeftMouseButton(e)) {
+			if(this.state == 1) {
+				if(!e.isShiftDown()) {
+					this.unselectAll();
+				}
+				this.setTarget(e.getPoint());
+				if(this.target != null) {
+					SelectionAttributes sa;
+					if(this.target instanceof Handle) {
+						Handle h = (Handle) this.target;
+						sa = (SelectionAttributes)h.getMaster().getAttributes(Attributes.SelectionID);
+						if(sa != null) {
+							sa.toggleSelection();
+							this.getView().repaint();
+						}
+					}
+					sa = (SelectionAttributes)this.target.getAttributes(Attributes.SelectionID);
 					if(sa != null) {
 						sa.toggleSelection();
 						this.getView().repaint();
 					}
 				}
-				sa = (SelectionAttributes)this.target.getAttributes(Attributes.SelectionID);
-				if(sa != null) {
-					sa.toggleSelection();
-					this.getView().repaint();
-				}
+			}
+			this.state = 1;
+		}
+		if (SwingUtilities.isRightMouseButton(e)) {
+			if (this.target != null) {
+				this.target.accept(painter);	//The ShapesPainter visit the shape the user right-clicked on
+				
+				this.refreshShowPalette(this.painter.getCurrentColor());
 			}
 		}
-		this.state = 1;
+		
+		this.getView().repaint();
 	}
 	
 	public void mouseEntered(MouseEvent e) {
@@ -172,6 +239,15 @@ public class ShapeController extends Controller{
 	        		this.paste();
 	        	}
 	     }
+	}
+	
+	public void sliderChange() {
+		int rValue = this.sliderR.getValue();
+		int gValue = this.sliderG.getValue();
+		int bValue = this.sliderB.getValue();
+		
+		this.sliderPalette.setColor(new Color(rValue, gValue, bValue));
+		this.getView().repaint();
 	}
 	
 	private void translateSelected(int x, int y) {
@@ -297,5 +373,11 @@ public class ShapeController extends Controller{
 		}
 		this.clipboard=new SCollection();
 		this.getView().repaint();
+	}
+	
+	public void refreshShowPalette(Color color) {
+		//set the color of the showPalette to the current color (it is not a visit, since the painter doesn't change the color of a SPalette
+		((ColorAttributes) showPalette.getAttributes(Attributes.ColorID)).setFilledColor(color);
+
 	}
 }

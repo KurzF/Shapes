@@ -115,9 +115,10 @@ public class Editor extends JFrame
 		p.addAttributes(new SelectionAttributes());
 		p.addAttributes(new RotationAttributes(0));
 		p.addAttributes(new ResizeAttributes());
+		p.addAttributes(new ColorAttributes());
 		this.model.add(p);
 		
-		SImage i = new SImage("rsc/img/java.jpg", new Point(0,0));
+		SImage i = new SImage("src/rsc/img/java.jpg", new Point(0,0));
 		i.addAttributes(new SelectionAttributes());
 		i.addAttributes(new ResizeAttributes());
 		i.addAttributes(new RotationAttributes());
