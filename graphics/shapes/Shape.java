@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,7 +26,7 @@ public abstract class Shape {
 	private ResizeHandles resize_handles;
 	
 	public Shape(Map<String,Attributes> map) {
-		Map<String,Attributes> copy=new TreeMap<String,Attributes>();
+		Map<String,Attributes> copy=new HashMap<String,Attributes>();
 		for(String s:map.keySet()){
 			copy.put(s,((Attributes)map.get(s)).clone());
 			System.out.println(copy.get(s));
