@@ -173,7 +173,7 @@ public class ShapeDraftman implements ShapeVisitor {
 		}
 	}
 	
-	public void visitImage(SImage img) {
+	/*public void visitImage(SImage img) {
 		Point location=img.getLoc();
 		ColorAttributes ca = (ColorAttributes) img.getAttributes(Attributes.ColorID);
 		RotationAttributes rotat = (RotationAttributes) img.getAttributes(Attributes.RotationID);
@@ -189,5 +189,22 @@ public class ShapeDraftman implements ShapeVisitor {
 		this.g.draw(img.getBounds());
 		drawSelection(img);
 		this.g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
-	}
+	}*/
+	
+	public void visitImage(SImage img) {
+		Point location=img.getLoc();
+		ColorAttributes ca = (ColorAttributes) img.getAttributes(Attributes.ColorID);
+		RotationAttributes rotat = (RotationAttributes) img.getAttributes(Attributes.RotationID);
+		if(ca == null) { 
+			ca = ShapeDraftman.DEFAULTCOLORATTRIBUTES; 
+		}
+		if (rotat == null) {
+			rotat= new RotationAttributes();
+		}
+		this.g.rotate(Math.toRadians(rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
+		Image i=img.getImage();
+		this.g.drawImage(i,img.getLoc().x,img.getLoc().y,null);
+		drawSelection(img);
+		this.g.rotate(Math.toRadians(-rotat.getAngle()),location.x+(img.getBounds().width/2),location.y+(img.getBounds().height/2));
+}
 }

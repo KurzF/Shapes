@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class SImage extends Shape{
 	private String imageURL;
-	public Image image;
+	private Image image;
 	private Point loc;
 	
 	public SImage(String url) {
@@ -22,6 +22,7 @@ public class SImage extends Shape{
 	        this.image = kit.getImage(this.imageURL);
 	    }
 	    this.setResizeHandles();
+	    this.refresh();
 	}
 	
 	public SImage(String url,Point p) {
@@ -32,6 +33,7 @@ public class SImage extends Shape{
 	        this.image = kit.getImage(this.imageURL);
 	    }
 	    this.setResizeHandles();
+	    this.refresh();
 	}
 	
 	public SImage(String url,Point p,int width, int height, boolean withHandles) {
@@ -44,6 +46,7 @@ public class SImage extends Shape{
 	    }
 	    if(withHandles) {
 	    	this.setResizeHandles();
+	    	this.refresh();
 	    }
 	    
 	}
@@ -59,6 +62,7 @@ public class SImage extends Shape{
 	    this.image =i;
 	    if(withHandles) {
 	    	this.setResizeHandles();
+	    	this.refresh();
 	    }
 	}
 	
@@ -72,7 +76,7 @@ public class SImage extends Shape{
 	
 	@Override
 	public Point getLoc() {
-		return this.loc;
+		return (Point)this.loc.clone();
 	}
 
 	@Override
@@ -89,10 +93,13 @@ public class SImage extends Shape{
 
 	@Override
 	public Rectangle getBounds() {
-
+		int width;
+		int height;
 		Rectangle rect=new Rectangle();
-		rect.width=this.image.getWidth(null);
-		rect.height=this.image.getHeight(null);
+		width=this.image.getWidth(null);
+		height=this.image.getHeight(null);
+		rect.width=width;
+		rect.height=height;
 		rect.x=this.loc.x;
 		rect.y=this.loc.y;
 		return rect;
@@ -102,6 +109,7 @@ public class SImage extends Shape{
 		vs.visitImage(this);
 	}
 	
+
 	public Shape clone(){
 		return new SImage(this.imageURL,this.getLoc(),this.image,attributes,this.getResizeHandles()!=null);
 	}
@@ -115,14 +123,14 @@ public class SImage extends Shape{
 
 	@Override
 	public void setWidth(int width) {
-		//this.image=this.image.getScaledInstance(width, this.image.getHeight(null), Image.SCALE_SMOOTH);
-		//this.refresh();
+		new SImage(this.imageURL,this.getLoc(),width, this.getHeight());
+		this.refresh();
 		
 	}
 
 	@Override
 	public void setHeight(int height) {
-		//this.image=this.image.getScaledInstance(this.image.getWidth(null), height, Image.SCALE_SMOOTH);
-		//this.refresh();
+		new SImage(this.imageURL,this.getLoc(), this.getWidth(), height);
+		this.refresh();
 	}
 }

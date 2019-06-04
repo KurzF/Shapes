@@ -54,15 +54,7 @@ public class ResizeHandles {
 			return null;
 		}
 	}
-	/**
-	 * 
-	 * @param h Handler to add
-	 */
-	public void add(int position, Handle h) {
-		if(position < ResizeHandles.LENGTH && position > -1) {
-			this.resize_handles[position] = h;
-		}
-	}
+
 	
 	/*public void translate(int dx, int dy) {
 		for(int i=0; i<ResizeHandles.LENGTH; i++) {

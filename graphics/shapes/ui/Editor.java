@@ -120,7 +120,6 @@ public class Editor extends JFrame
 		SImage i = new SImage("rsc/img/java.jpg", new Point(0,0));
 		i.addAttributes(new SelectionAttributes());
 		i.addAttributes(new ResizeAttributes());
-		i.addAttributes(new ColorAttributes(true,true,Color.MAGENTA,Color.BLUE));
 		i.addAttributes(new RotationAttributes());
 		this.model.add(i);
 	}
